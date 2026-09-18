@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Harness v{{ harness.version }}{% endblock %}
+{% block content %}
+<h1>Harness v{{ harness.version }}</h1>
+<p class="dim">Published {{ harness.published_at|dt }} · origin {{ harness.origin }}{% if harness.parent_version %} · from v{{ harness.parent_version }}{% endif %}</p>
+<div class="prose">{{ harness.changelog|md|safe }}</div>
+<h2>Prompts</h2>
+{% for k, v in harness.config.prompts.items() %}<details><summary><code>{{ k }}</code></summary><pre>{{ v }}</pre></details>{% endfor %}
+<h2>Full configuration</h2>
+<pre>{{ harness.config|pretty }}</pre>
+{% endblock %}

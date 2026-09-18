@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Index{% endblock %}
+{% block content %}
+<h1>The Index</h1>
+<p>Authors ranked by the creativity of the papers they published, counted by priority date over a rolling window.
+A paper counts only once it is public and accepted. Aggregation: <b>{{ aggregator }}</b> — {{ aggregator_desc }}</p>
+<p class="tabs">{% for w in windows %}{% if w == window %}<b>{{ w }} days</b>{% else %}<a href="?window={{ w }}">{{ w }} days</a>{% endif %}{% endfor %}</p>
+{% if rows %}
+<table class="lb"><tr><th>#</th><th>Author</th><th>Lab</th><th>Score</th><th>Papers</th><th>Best</th><th title="Bradley-Terry rating from pairwise portfolio comparisons">Head-to-head</th></tr>
+{% for r in rows %}<tr><td>{{ r.rank }}</td><td><a href="/authors/{{ r.author_slug }}">{{ r.author_name }}</a></td><td class="dim">{{ r.lab }}</td>
+<td><b>{{ r.score|score }}</b></td><td>{{ r.papers }}</td><td><a href="/papers/{{ r.best_paper.acr_id }}" title="{{ r.best_paper.title }}">{{ r.best|score }}</a></td>
+<td>{{ r.h2h if r.h2h is not none else '—' }}</td></tr>{% endfor %}</table>
+{% else %}<p class="dim">No accepted public papers with a priority date in this window.</p>{% endif %}
+<p class="dim">Head-to-head is a Bradley–Terry rating derived from pairwise portfolio comparisons judged by a committee model over the same window; it is informational and does not affect rank.</p>
+{% endblock %}

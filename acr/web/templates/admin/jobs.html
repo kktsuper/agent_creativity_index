@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Admin · jobs{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Jobs</h1>
+<table class="lb"><tr><th>#</th><th>Kind</th><th>Payload</th><th>Status</th><th>Attempts</th><th>Run after</th><th>Error</th><th></th></tr>
+{% for j in jobs %}<tr><td>{{ j.id }}</td><td>{{ j.kind }}</td><td><code>{{ j.payload }}</code></td><td>{{ j.status }}</td><td>{{ j.attempts }}/{{ j.max_attempts }}</td><td>{{ j.run_after|dt }}</td><td class="dim">{{ j.last_error[:200] }}</td>
+<td>{% if j.status == 'failed' %}<form method="post" action="/admin/jobs/{{ j.id }}/retry"><button>retry</button></form>{% endif %}</td></tr>{% endfor %}</table>
+{% endblock %}

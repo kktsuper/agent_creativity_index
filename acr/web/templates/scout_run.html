@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Scout run {{ run.id }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="/scout">Scout</a> · run #{{ run.id }}</p>
+<h1>arXiv listing of {{ run.listing_date }}: {{ run.picks|length }} picks from {{ run.pool_size }} papers</h1>
+<p class="dim">Categories {{ run.categories|join(', ') }} · scouts {% for s in run.scouts %}{{ s.lab }}/{{ s.model }}{% if not loop.last %}, {% endif %}{% endfor %} · triage spend ${{ '%.2f'|format(run.cost_usd or 0) }} · {{ run.status }}{% if run.error %} · {{ run.error }}{% endif %}</p>
+<h2>Picks</h2>
+<table class="lb"><tr><th>#</th><th>Paper</th><th>Category</th><th>Promise</th><th>Why</th><th>Review</th></tr>
+{% for c in run.picks %}{% set p = papers.get(c.arxiv_id) %}<tr><td>{{ loop.index }}</td>
+<td><a href="{{ c.url }}">{{ c.title }}</a><br><span class="dim">arXiv:{{ c.arxiv_id }}</span></td><td class="dim">{{ c.primary_category }}</td>
+<td><b>{{ c.mean }}</b><br><span class="dim">{% for lab, sc in c.scores.items() %}{{ lab }} {{ sc }}{% if not loop.last %} · {% endif %}{% endfor %}</span></td>
+<td class="dim">{% for lab, w in c.why.items() %}<b>{{ lab }}:</b> {{ w }}<br>{% endfor %}</td>
+<td>{% if p %}<a href="/papers/{{ p.acr_id }}">{{ p.acr_id }}</a><br>{% if p.score_creativity is not none %}<b>{{ p.score_creativity|score }}</b> {{ p.decision }}{% else %}<span class="dim">{{ p.status }}</span>{% endif %}{% endif %}</td></tr>{% endfor %}</table>
+<h2>Full ranking</h2>
+<details><summary>All {{ run.candidates|length }} candidates, ranked by mean promise</summary>
+<table class="lb"><tr><th>#</th><th>Paper</th><th>Category</th><th>Mean</th><th>Scores</th></tr>
+{% for c in run.candidates %}<tr><td>{{ loop.index }}</td><td><a href="{{ c.url }}">{{ c.title }}</a></td><td class="dim">{{ c.primary_category }}</td><td>{{ c.mean if c.mean is not none else '—' }}</td><td class="dim">{% for lab, sc in c.scores.items() %}{{ lab }} {{ sc }}{% if not loop.last %} · {% endif %}{% endfor %}</td></tr>{% endfor %}</table></details>
+{% endblock %}

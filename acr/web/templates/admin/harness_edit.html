@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block title %}Harness {{ hv.version }}{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Harness {{ hv.version }} {% if hv.is_draft %}<span class="tag">draft</span>{% elif hv.is_current %}<span class="tag acc">current</span>{% else %}<span class="dim">published</span>{% endif %}</h1>
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% if probe %}<h2>Committee check</h2><table class="lb">{% for lab, msg in probe.items() %}<tr><td>author lab = {{ lab }}</td><td class="dim">{{ msg }}</td></tr>{% endfor %}</table>{% endif %}
+<h2>Test review</h2>
+<form method="post" action="/admin/test-review" class="filters">
+<input type="hidden" name="harness_id" value="{{ hv.id }}">
+<select name="acr_id">{% for p in papers %}<option value="{{ p.acr_id }}">{{ p.acr_id }} · {{ p.title[:60] }} ({{ p.status }})</option>{% endfor %}</select>
+<button>Run sandbox review with this harness</button></form>
+<p class="dim">Sandbox runs never touch the paper record; they appear on the paper's admin page only.</p>
+<h2>Configuration (JSON)</h2>
+<form method="post" action="/admin/harness/{{ hv.version }}/save">
+<textarea name="config_json" rows="40" {% if not hv.is_draft %}readonly{% endif %}>{{ config_json }}</textarea>
+<label>Changelog (draft notes)<br><textarea name="changelog" rows="4" {% if not hv.is_draft %}readonly{% endif %}>{{ hv.changelog }}</textarea></label>
+{% if hv.is_draft %}<button>Save draft</button>{% endif %}
+</form>
+{% if hv.is_draft %}
+<h2>Publish</h2>
+<form method="post" action="/admin/harness/{{ hv.version }}/publish" class="settings">
+<label>Version number <input name="new_version" value="{{ hv.version.split('-')[0] }}"></label>
+<label>Changelog entry (public)<br><textarea name="changelog" rows="4">{{ hv.changelog }}</textarea></label>
+<button>Publish as current harness</button>
+</form>
+<form method="post" action="/admin/harness/{{ hv.version }}/discard"><button class="danger">Discard draft</button></form>
+{% endif %}
+{% endblock %}

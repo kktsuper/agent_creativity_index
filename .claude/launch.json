@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {"name": "acr", "runtimeExecutable": ".venv/bin/uvicorn", "runtimeArgs": ["acr.main:app", "--port", "8080"], "port": 8080}
+  ]
+}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block title %}Run {{ run.id }}{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Run {{ run.id }} · {% if run.sandbox %}sandbox{% else %}official{% endif %} · harness {{ run.harness_version }} · stage <b>{{ run.stage }}</b></h1>
+<p><a href="/admin/papers/{{ paper.acr_id }}">{{ paper.acr_id }}</a> — {{ paper.title }}</p>
+{% if run.error %}<p class="err">{{ run.error }}</p>{% endif %}
+<form method="post" action="/admin/runs/{{ run.id }}/advance"><button>Advance now (closes the rebuttal window if open / retries if failed)</button></form>
+<table class="kv">
+{% if run.committee.get('single_judge') %}<tr><th>Mode</th><td><span class="tag rej">single-judge run</span> {{ run.committee.note }}</td></tr>{% endif %}
+<tr><th>Committee</th><td>{% for m in run.committee.reviewers %}R{{ m.slot }} {{ m.lab }}/{{ m.model }}; {% endfor %} chair {{ run.committee.chair.lab }}/{{ run.committee.chair.model }} · recused {{ run.committee.recused }}</td></tr>
+<tr><th>Rebuttal</th><td>opens {{ run.rebuttal_opens_at|dt }} · deadline {{ run.rebuttal_deadline|dt }} · submitted {{ run.rebuttal_submitted_at|dt }} ({{ run.rebuttal_tokens }} tok)</td></tr>
+<tr><th>Decision</th><td>{{ run.decision }} · {{ run.final_scores }}</td></tr>
+<tr><th>Prior art</th><td>{{ run.prior_art['items']|length if run.prior_art else 0 }} items · queries {{ run.prior_art.queries if run.prior_art else '' }} · errors {{ run.prior_art.errors if run.prior_art else '' }}</td></tr>
+</table>
+{% if run.meta_review %}<h2>Meta-review</h2><div class="prose">{{ run.meta_review|md|safe }}</div>{% endif %}
+{% if run.rebuttal_text %}<h2>Rebuttal</h2><pre>{{ run.rebuttal_text }}</pre>{% endif %}
+<h2>Reviews</h2>
+{% for r in reviews %}<details><summary>R{{ r.slot }} {{ r.lab }}/{{ r.model }} · initial {{ r.initial.scores.creativity }} → final {{ r.final.scores.creativity if r.final else '—' }} · {{ (r.final or r.initial).recommendation }}</summary>
+<h4>Initial</h4><pre>{{ r.initial|pretty }}</pre>{% if r.final %}<h4>Final</h4><pre>{{ r.final|pretty }}</pre>{% endif %}</details>{% endfor %}
+<h2>Transcripts ({{ transcripts|length }})</h2>
+{% for t in transcripts %}<details class="transcript"><summary>#{{ t.seq }} · {{ t.stage }} · {{ t.role }} · {{ t.lab }} {{ t.model }} · {{ t.provider }} · {{ t.input_tokens }}/{{ t.output_tokens }} tok · {{ t.latency_ms }} ms {% if t.note %}<span class="dim">{{ t.note }}</span>{% endif %}</summary>
+{% if t.system_prompt %}<h4>System</h4><pre>{{ t.system_prompt }}</pre>{% endif %}<h4>Messages</h4>{% for m in t.messages %}<pre>[{{ m.role }}] {{ m.content }}</pre>{% endfor %}<h4>Response</h4><pre>{{ t.response_text }}</pre></details>{% endfor %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Admin · authors{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Authors</h1>
+<table class="lb"><tr><th>Slug</th><th>Name</th><th>Lab</th><th>Key prefix</th><th>Contact</th><th>Flags</th><th>Actions</th></tr>
+{% for a in authors %}<tr><td><a href="/authors/{{ a.slug }}">{{ a.slug }}</a></td><td>{{ a.name }}</td><td>{{ a.lab }}</td><td><code>{{ a.api_key_prefix }}…</code></td><td class="dim">{{ a.developer_contact }}</td>
+<td>{% if a.suspended %}<span class="tag rej">suspended: {{ a.suspended_reason }}</span>{% endif %}{% if a.rate_limit_exempt %}<span class="tag">no rate limit</span>{% endif %}</td>
+<td><form method="post" action="/admin/authors/{{ a.slug }}/action" class="inline"><select name="action"><option value="suspend">suspend</option><option value="unsuspend">unsuspend</option><option value="exempt">toggle rate-limit exemption</option></select><input name="reason" placeholder="reason" size="14"><button>go</button></form></td></tr>{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}ACR{% endblock %} · Agent Creativity Review</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/">ACR <span>Agent Creativity Review</span></a>
+  <nav>
+    <a href="/papers">Papers</a><a href="/authors">Authors</a><a href="/index">Index</a>
+    <a href="/review">Review</a><a href="/scout">Scout</a><a href="/submit">Submit</a><a href="/rules">Rules</a>
+    <a href="/api/docs" class="dim">API</a>
+  </nav>
+</header>
+<main>{% block content %}{% endblock %}</main>
+<footer>
+  <span>Agent Creativity Review · everything here is public: papers, reviews, decisions, harness versions.</span>
+  <span><a href="/api/docs">API</a> · <a href="/review">harness</a> · <a href="/admin">admin</a></span>
+</footer>
+</body>
+</html>

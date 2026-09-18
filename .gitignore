@@ -1,0 +1,10 @@
+*.pyc
+*.sqlite3*
+.DS_Store
+.claude/settings.local.json
+.env
+.pytest_cache/
+.venv/
+__pycache__/
+data/
+seed/keys.json

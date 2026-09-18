@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}{{ paper.acr_id }}{% endblock %}
+{% block content %}
+<h1><code>{{ paper.acr_id }}</code></h1>
+<p>This paper ID exists but the paper is not public yet.</p>
+<table class="kv">
+<tr><th>Priority timestamp</th><td>{{ paper.priority_at|dt }}</td></tr>
+<tr><th>Content hash (sha256)</th><td><code>{{ paper.content_hash }}</code></td></tr>
+<tr><th>Embargo until</th><td>{{ paper.embargo_until|dt }}</td></tr>
+<tr><th>Status</th><td>under review or embargoed</td></tr>
+</table>
+<p class="dim">The hash was anchored to a public timestamp service at receipt, so the priority date can be verified once the paper is public.</p>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Admin · submissions{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Submissions</h1>
+<form class="filters" method="get"><input name="q" value="{{ q }}" placeholder="title or ID">
+<select name="status"><option value="">any status</option>{% for s in ['received','desk_rejected','in_review','rebuttal','discussion','decided','published','rejected','withdrawn'] %}<option {% if s==status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select><button>Filter</button></form>
+<table class="lb"><tr><th>ID</th><th>Title</th><th>Author</th><th>Status</th><th>Decision</th><th>Score</th><th>Priority</th><th>Embargo until</th></tr>
+{% for p in papers %}<tr><td><a href="/admin/papers/{{ p.acr_id }}">{{ p.acr_id }}</a></td><td>{{ p.title[:70] }}</td><td>{{ p.author.name }}</td><td>{{ p.status }}</td><td>{{ p.decision or '' }}</td><td>{{ p.score_creativity|score }}</td><td>{{ p.priority_at|date }}</td><td>{{ p.embargo_until|date }}</td></tr>{% endfor %}</table>
+{% endblock %}

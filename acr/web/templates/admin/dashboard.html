@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block title %}Admin{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Dashboard</h1>
+<div class="cards">
+{% for k, v in counts.items() %}<div class="card"><div class="big">{{ v }}</div><div class="dim">{{ k }}</div></div>{% endfor %}
+<div class="card"><div class="big">{{ queued }}</div><div class="dim">jobs queued/running</div></div>
+<div class="card"><div class="big">${{ '%.2f'|format(spend_today) }}</div><div class="dim">model spend today (cap ${{ settings_.spend_cap_daily_usd }})</div></div>
+<div class="card"><div class="big">${{ '%.2f'|format(spend_total) }}</div><div class="dim">model spend, all time</div></div>
+</div>
+<div class="cols">
+<section>
+<h2>Recent submissions</h2>
+<table class="lb"><tr><th>ID</th><th>Title</th><th>Status</th><th>Decision</th><th>Score</th></tr>
+{% for p in recent %}<tr><td><a href="/admin/papers/{{ p.acr_id }}">{{ p.acr_id }}</a></td><td>{{ p.title[:60] }}</td><td>{{ p.status }}</td><td>{{ p.decision or '' }}</td><td>{{ p.score_creativity|score }}</td></tr>{% endfor %}</table>
+{% if failed_jobs %}<h2>Failed jobs</h2><table class="lb">{% for j in failed_jobs %}<tr><td>{{ j.id }}</td><td>{{ j.kind }}</td><td><code>{{ j.payload }}</code></td><td class="dim">{{ j.last_error[:160] }}</td>
+<td><form method="post" action="/admin/jobs/{{ j.id }}/retry"><button>retry</button></form></td></tr>{% endfor %}</table>{% endif %}
+</section>
+<aside>
+<h2>Harness v{{ harness.version }} · providers</h2>
+<table class="lb">{% for m, ok, why in providers %}<tr><td>{{ m.lab }}</td><td><code>{{ m.model }}</code></td><td>{% if ok %}<span class="tag acc">ready</span>{% else %}<span class="tag rej">no key</span> <span class="dim">{{ why }}</span>{% endif %}</td></tr>{% endfor %}</table>
+<p class="dim">LLM mode: <b>{{ settings().llm_mode }}</b>; missing-key policy: <b>{{ settings().missing_key_policy }}</b>.</p>
+<h2>Settings</h2>
+<form method="post" action="/admin/settings" class="settings">
+<label><input type="checkbox" name="rate_limit_enabled" {% if settings_.rate_limit_enabled %}checked{% endif %}> rate limit on</label>
+<label>submissions / key / day <input name="rate_limit_submissions_per_day" value="{{ settings_.rate_limit_submissions_per_day }}" size="4"></label>
+<label>index aggregator <select name="index_aggregator">{% for a in aggregators %}<option {% if a == settings_.index_aggregator %}selected{% endif %}>{{ a }}</option>{% endfor %}</select></label>
+<label><input type="checkbox" name="auto_review" {% if settings_.auto_review %}checked{% endif %}> start official review automatically after desk screen</label>
+<label>spend cap per run, USD <input name="spend_cap_per_run_usd" value="{{ settings_.spend_cap_per_run_usd }}" size="5"></label>
+<label>spend cap per day, USD <input name="spend_cap_daily_usd" value="{{ settings_.spend_cap_daily_usd }}" size="5"></label>
+<label><input type="checkbox" name="auto_publish" {% if settings_.auto_publish %}checked{% endif %}> publish automatically when embargo lifts</label>
+<button>Save</button>
+</form>
+</aside>
+</div>
+{% endblock %}

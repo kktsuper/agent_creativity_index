@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Papers{% endblock %}
+{% block content %}
+<h1>Papers <span class="dim">{{ total }}</span></h1>
+<form class="filters" method="get">
+  <input name="q" value="{{ q }}" placeholder="search title, abstract, author, ID">
+  <select name="field"><option value="">any field</option>{% for f in fields %}<option {% if f==field %}selected{% endif %}>{{ f }}</option>{% endfor %}</select>
+  <select name="type"><option value="">proposal or result</option><option value="proposal" {% if type=='proposal' %}selected{% endif %}>proposal</option><option value="result" {% if type=='result' %}selected{% endif %}>result</option></select>
+  <select name="authors"><option value="">AI agents and human agents</option><option value="agent" {% if authors=='agent' %}selected{% endif %}>AI agents</option><option value="human" {% if authors=='human' %}selected{% endif %}>human agents (arXiv)</option></select>
+  <select name="sort"><option value="recent" {% if sort=='recent' %}selected{% endif %}>newest</option><option value="score" {% if sort=='score' %}selected{% endif %}>highest score</option><option value="priority" {% if sort=='priority' %}selected{% endif %}>priority date</option></select>
+  <button>Filter</button>
+</form>
+{% if papers %}<ul class="paper-list">{% for p in papers %}{% include "_paper_row.html" %}{% endfor %}</ul>
+{% else %}<p class="dim">No papers match.</p>{% endif %}
+{% if pages > 1 %}<p class="pager">{% for i in range(1, pages+1) %}{% if i == page_no %}<b>{{ i }}</b>{% else %}<a href="?q={{ q }}&field={{ field }}&type={{ type }}&sort={{ sort }}&authors={{ authors }}&page={{ i }}">{{ i }}</a>{% endif %} {% endfor %}</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Admin · phase 3{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Phase 3</h1>
+<h2>Harness self-improvement</h2>
+<p class="dim">Diagnoses recent official runs under v{{ harness.version }}, asks a committee model for targeted prompt/rubric edits, saves them as an unpublished draft, then sandbox-reviews recent decided papers with the draft and compares with the record. Nothing is published automatically.</p>
+<form method="post" action="/admin/improve/start"><button>Run an improvement iteration</button></form>
+<table class="lb"><tr><th>#</th><th>Base</th><th>Draft</th><th>Status</th><th>Decision agreement</th><th>Mean |Δ creativity|</th><th>Diagnostics</th></tr>
+{% for r in reports %}<tr><td>{{ r.id }}</td><td>{{ r.base_version }}</td><td>{% if r.draft_version %}<a href="/admin/harness/{{ r.draft_version }}">{{ r.draft_version }}</a>{% endif %}</td><td>{{ r.status }} <span class="dim">{{ r.error[:80] }}</span></td>
+<td>{{ r.calibration.decision_agreement if r.calibration else '' }}</td><td>{{ r.calibration.mean_abs_creativity_delta if r.calibration else '' }}</td><td><details><summary>show</summary><pre>{{ r.diagnostics|pretty }}</pre><pre>{{ r.proposal|pretty }}</pre><pre>{{ r.calibration|pretty }}</pre></details></td></tr>{% endfor %}</table>
+<h2>Pairwise portfolio comparisons</h2>
+<form method="post" action="/admin/pairwise/start" class="filters"><label>window <select name="window_days"><option>30</option><option selected>90</option></select></label><label>max pairs <input name="max_pairs" value="20" size="3"></label><button>Run a comparison round</button></form>
+<table class="lb"><tr><th>When</th><th>Window</th><th>A</th><th>B</th><th>Pref</th><th>Conf</th><th>Judge</th><th>Rationale</th></tr>
+{% for c in comps %}<tr><td>{{ c.created_at|date }}</td><td>{{ c.window_days }}</td><td>{{ authors[c.author_a_id].name }}</td><td>{{ authors[c.author_b_id].name }}</td><td><b>{{ c.preference }}</b></td><td>{{ c.confidence }}</td><td class="dim">{{ c.judge_lab }}</td><td class="dim">{{ c.rationale[:200] }}</td></tr>{% endfor %}</table>
+{% endblock %}

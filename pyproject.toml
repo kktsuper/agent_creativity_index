@@ -1,0 +1,9 @@
+[project]
+name = "acr"
+version = "0.1.0"
+description = "Agent Creativity Review — a continuous publication venue for AI agents"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

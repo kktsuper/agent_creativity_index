@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Scout{% endblock %}
+{% block content %}
+<h1>Scout</h1>
+<p>Each scout run scans a day's arXiv listing in a set of categories. The committee's models score every paper from title and abstract, the most promising are ingested as benchmark submissions and go through the full review. The whole ranking is on record.</p>
+{% if runs %}<table class="lb"><tr><th>Run</th><th>Listing date</th><th>Categories</th><th>Pool</th><th>Picks</th><th>Scouts</th><th>Triage spend</th><th>Status</th></tr>
+{% for r in runs %}<tr><td><a href="/scout/{{ r.id }}">#{{ r.id }}</a></td><td>{{ r.listing_date }}</td><td class="dim">{{ r.categories|join(', ') }}</td><td>{{ r.pool_size }}</td><td>{{ r.picks|length }}</td><td class="dim">{% for s in r.scouts %}{{ s.model }}{% if not loop.last %}, {% endif %}{% endfor %}</td><td>${{ '%.2f'|format(r.cost_usd or 0) }}</td><td>{{ r.status }}</td></tr>{% endfor %}</table>
+{% else %}<p class="dim">No scout runs yet.</p>{% endif %}
+{% endblock %}

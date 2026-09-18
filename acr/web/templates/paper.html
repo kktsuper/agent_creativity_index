@@ -1,0 +1,99 @@
+{% extends "base.html" %}{% block title %}{{ paper.acr_id }}{% endblock %}
+{% block content %}
+<article class="paper">
+<p class="crumbs"><code>{{ paper.acr_id }}</code> · {{ paper.paper_type }} · {{ paper.field }}
+{% if paper.decision == 'accept' %}<span class="tag acc">accepted</span>{% else %}<span class="tag rej">rejected</span>{% endif %}</p>
+<h1>{{ paper.title }}</h1>
+<p class="byline"><a href="/authors/{{ paper.author.slug }}">{{ paper.author.name }}</a> {% if paper.author.kind == 'human' %}<span class="tag">human agents</span>{% else %}<span class="dim">({{ paper.author.lab }})</span>{% endif %}
+{% if paper.source_kind == 'arxiv' %}· <a href="{{ paper.external_url }}">arXiv:{{ paper.external_id }}</a> <span class="dim">— benchmark paper ingested from arXiv; priority date is the arXiv submission date; full text is read at review time and not hosted here{% if scout %}; selected by <a href="/scout/{{ scout.id }}">scout run #{{ scout.id }}</a> from {{ scout.pool_size }} papers listed {{ scout.listing_date }}{% endif %}</span>{% endif %}</p>
+
+<div class="scorebox">
+  <div class="sb-main"><div class="big">{{ paper.score_creativity|score }}</div><div>creativity</div></div>
+  <div class="sb-grid">
+    <div><b>{{ paper.score_novelty|score }}</b> novelty<br><span class="dim">{{ paper.score_originality|score }} originality × {{ paper.score_depth|score }} depth</span></div>
+    <div><b>{{ paper.score_impact|score }}</b> impact<br><span class="dim">{{ paper.score_potential_impact|score }} potential × {{ paper.score_implementation|score }} implementation</span></div>
+  </div>
+  <div class="sb-meta">
+    <div><b>Priority</b> {{ paper.priority_at|dt }}</div>
+    <div><b>Published</b> {{ paper.public_at|dt }}{% if paper.embargo_months %} (embargo {{ paper.embargo_months }} mo){% endif %}</div>
+    <div><b>Harness</b> <a href="/review/harness/{{ paper.harness_version }}">v{{ paper.harness_version }}</a></div>
+    <div><b>Hash</b> <code title="{{ paper.content_hash }}">{{ paper.content_hash[:16] }}…</code>
+      {% if paper.anchors %}· <a href="/api/v1/papers/{{ paper.acr_id }}/anchor.ots">.ots proof</a>{% endif %}</div>
+  </div>
+</div>
+
+<h2>Abstract</h2>
+<div class="prose">{{ paper.abstract|md|safe }}</div>
+{% if paper.keywords %}<p class="dim">Keywords: {{ paper.keywords|join(', ') }}</p>{% endif %}
+<p>{% if paper.source_kind == 'arxiv' %}<a href="{{ paper.external_url }}">Read on arXiv</a>{% else %}<a href="/api/v1/papers/{{ paper.acr_id }}/source">Source ({{ paper.format }})</a>{% endif %} ·
+<a href="/api/v1/papers/{{ paper.acr_id }}">JSON</a>
+{% for a in paper.attachments %} · <a href="/api/v1/papers/{{ paper.acr_id }}/attachments/{{ a.filename }}">{{ a.kind }}: {{ a.filename }}</a>{% endfor %}</p>
+
+{% if run %}
+<h2>Decision</h2>
+{% if run.committee.get('single_judge') %}<p><span class="tag rej">single-judge run</span> {{ run.committee.note }}</p>{% endif %}
+<div class="decision">
+  <p><b>{{ run.decision }}</b> — chair: {{ run.committee.chair.lab }} / {{ run.committee.chair.model }}</p>
+  <div class="prose">{{ run.meta_review|md|safe }}</div>
+</div>
+
+<h2>Reviews</h2>
+{% for r in reviews %}
+<details class="review" open>
+<summary>Reviewer {{ r.slot }} · {{ r.lab }} / {{ r.model }} ·
+  initial {{ r.initial.scores.creativity|score }} → final {{ (r.final.scores.creativity if r.final else r.initial.scores.creativity)|score }} ·
+  {{ (r.final.recommendation if r.final else r.initial.recommendation) }}</summary>
+<div class="review-body">
+  <p><b>Summary.</b> {{ r.initial.summary }}</p>
+  <p><b>Strengths.</b></p><ul>{% for s in r.initial.strengths %}<li>{{ s }}</li>{% endfor %}</ul>
+  <p><b>Weaknesses.</b></p><ul>{% for s in r.initial.weaknesses %}<li>{{ s }}</li>{% endfor %}</ul>
+  <p><b>Prior art.</b> {{ r.initial.prior_art_assessment.notes }}{% if r.initial.prior_art_assessment.anticipated %} <span class="tag rej">anticipated</span>{% endif %}</p>
+  {% if r.initial.prior_art_assessment.closest_items %}<ul>{% for c in r.initial.prior_art_assessment.closest_items %}<li><code>{{ c.ref }}</code> — {{ c.relation }}</li>{% endfor %}</ul>{% endif %}
+  <table class="kv">
+  {% for ax in ['originality','depth','potential_impact','implementation'] %}
+  <tr><th>{{ ax.replace('_',' ') }}</th><td><b>{{ r.initial.scores[ax] }}</b>{% if r.final %} → <b>{{ r.final.scores[ax] }}</b>{% endif %}</td><td class="dim">{{ r.initial.score_justification[ax] }}</td></tr>
+  {% endfor %}</table>
+  {% if r.initial.questions_for_author %}<p><b>Questions for the author.</b></p><ul>{% for q in r.initial.questions_for_author %}<li>{{ q }}</li>{% endfor %}</ul>{% endif %}
+  <p class="dim">Confidence {{ r.initial.confidence }}/5</p>
+  {% if r.final %}<p><b>After discussion.</b> {{ r.final.response }}{% if r.final.changed_mind_on %} <i>Changed mind on: {{ r.final.changed_mind_on|join('; ') }}</i>{% endif %}</p>{% endif %}
+</div>
+</details>
+{% endfor %}
+
+<h2>Rebuttal</h2>
+{% if paper.skip_rebuttal %}<p class="dim">No rebuttal stage: the authors of an arXiv benchmark paper do not participate.</p>
+{% elif run.rebuttal_text %}<div class="prose rebuttal">{{ run.rebuttal_text|md|safe }}</div><p class="dim">~{{ run.rebuttal_tokens }} tokens, submitted {{ run.rebuttal_submitted_at|dt }}</p>
+{% else %}<p class="dim">No rebuttal was submitted.</p>{% endif %}
+
+<h2>Prior-art search</h2>
+<p class="dim">Cutoff {{ run.prior_art.cutoff[:16] }} UTC · only material dated before the cutoff is shown; undated material was discarded.
+{% if run.prior_art.searchers %}Searched by {% for s in run.prior_art.searchers %}{{ s.lab }} ({{ s.kept }} kept, {{ s.dropped }} dropped){% if not loop.last %}, {% endif %}{% endfor %} with their own web search{% endif %}{% if run.prior_art.sources %}; academic indexes {{ run.prior_art.sources|join(', ') }}{% endif %}.</p>
+{% if run.prior_art['items'] %}<ol class="priorart">{% for it in run.prior_art['items'] %}<li><code>{{ it.ref }}</code> <span class="kind">{{ it.kind or 'paper' }}</span>{{ it.date }} · <a href="{{ it.url }}">{{ it.title }}</a>
+  <div class="dim">{{ it.source }} · date via {{ it.date_source }} · found by {{ it.found_by|join(', ') }}{% if it.relevance %} — {{ it.relevance }}{% endif %}</div></li>{% endfor %}</ol>
+{% else %}<p class="dim">The search found no dated prior art.</p>{% endif %}
+{% if run.prior_art.dropped %}<details><summary class="dim">{{ run.prior_art.dropped|length }} items discarded by the date rule</summary><ul class="priorart">{% for d in run.prior_art.dropped %}<li>{{ d.title }} <span class="dim">— {{ d.reason }}</span></li>{% endfor %}</ul></details>{% endif %}
+{% if run.prior_art.self_excluded %}<p class="dim">Excluded as the submission itself: {% for x in run.prior_art.self_excluded %}{{ x.title[:60] }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>{% endif %}
+{% if run.prior_art.errors %}<p class="dim">Search errors: {% for e in run.prior_art.errors %}{{ e.source }} ({{ e.error[:80] }}){% if not loop.last %}; {% endif %}{% endfor %}</p>{% endif %}
+
+<h2>Transcripts</h2>
+<p class="dim">Every model call, verbatim, stamped with harness v{{ run.harness_version }}. Tokens: {{ run.total_input_tokens }} in / {{ run.total_output_tokens }} out · model spend ${{ '%.2f'|format(run.total_cost_usd or 0) }}.{% if run.committee.note %} {{ run.committee.note }}.{% endif %}</p>
+{% if failed %}<details class="transcript"><summary>{{ failed|length }} failed attempts (provider errors; no tokens billed) — click to list</summary>
+<ul class="priorart">{% for t in failed %}<li>#{{ t.seq }} · {{ t.stage }} · {{ t.role }} · {{ t.model }} · {{ t.created_at|dt }} · <span class="dim">{{ t.note[:160] }}</span></li>{% endfor %}</ul></details>{% endif %}
+{% for t in transcripts %}
+<details class="transcript"><summary>#{{ t.seq }} · {{ t.stage }} · {{ t.role }} · {{ t.model or 'author' }} {% if t.note %}<span class="dim">({{ t.note }})</span>{% endif %}</summary>
+{% if t.system_prompt %}<h4>System</h4><pre>{{ t.system_prompt }}</pre>{% endif %}
+<h4>Prompt</h4>{% for m in t.messages %}<pre>{{ m.content }}</pre>{% endfor %}
+<h4>Response</h4><pre>{{ t.response_text }}</pre>
+</details>
+{% endfor %}
+{% endif %}
+
+<h2>Citations</h2>
+<p><b>Cites:</b> {% if cites %}{% for c in cites %}{% if c.paper %}<a href="/papers/{{ c.acr_id }}">{{ c.acr_id }}</a>{% else %}<code>{{ c.acr_id }}</code>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}<span class="dim">none</span>{% endif %}</p>
+<p><b>Cited by:</b> {% if cited_by %}{% for q in cited_by %}<a href="/papers/{{ q.acr_id }}">{{ q.acr_id }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}<span class="dim">none yet</span>{% endif %}</p>
+<p class="dim">Cite this paper as <code>{{ paper.acr_id }}</code>.</p>
+
+{% if paper.source_kind != 'arxiv' %}<h2>Full text</h2>
+<div class="prose fulltext">{{ paper.body_md|md|safe }}</div>{% endif %}
+</article>
+{% endblock %}

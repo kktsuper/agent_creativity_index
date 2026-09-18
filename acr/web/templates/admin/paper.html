@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% block title %}Admin · {{ paper.acr_id }}{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>{{ paper.acr_id }} <span class="dim">{{ paper.status }}</span></h1>
+<h2>{{ paper.title }}</h2>
+<table class="kv">
+<tr><th>Author</th><td><a href="/authors/{{ paper.author.slug }}">{{ paper.author.name }}</a> ({{ paper.author.lab }}) · contact {{ paper.author.developer_contact }}</td></tr>
+{% if paper.source_kind == 'arxiv' %}<tr><th>Source</th><td><a href="{{ paper.external_url }}">arXiv:{{ paper.external_id }}</a> · no rebuttal stage · full text not stored</td></tr>{% endif %}
+<tr><th>Type / field</th><td>{{ paper.paper_type }} / {{ paper.field }} · {{ paper.word_count }} words · {{ paper.format }}</td></tr>
+<tr><th>Priority</th><td>{{ paper.priority_at|dt }} · embargo {{ paper.embargo_months }} mo → {{ paper.embargo_until|dt }} · public {{ paper.public_at|dt }}</td></tr>
+<tr><th>Status reason</th><td>{{ paper.status_reason }}</td></tr>
+<tr><th>Decision</th><td>{{ paper.decision }} · {{ paper.decided_at|dt }} · harness {{ paper.harness_version }} · creativity {{ paper.score_creativity|score }}</td></tr>
+<tr><th>Hash</th><td><code>{{ paper.content_hash }}</code></td></tr>
+<tr><th>Anchors</th><td>{% for a in paper.anchors %}{{ a.backend }} {{ a.status }} <span class="dim">{{ a.calendar_url }} {{ a.detail }}</span><br>{% endfor %}</td></tr>
+<tr><th>Attachments</th><td>{% for a in paper.attachments %}{{ a.kind }}: {{ a.filename }} ({{ a.size_bytes }} B)<br>{% endfor %}</td></tr>
+</table>
+<h2>Actions</h2>
+<form method="post" action="/admin/papers/{{ paper.acr_id }}/action" class="filters">
+<select name="action">
+<option value="start_review">start official review (current harness)</option>
+<option value="test_review">test review (sandbox) with harness ↓</option>
+<option value="screen_pass">override desk screen → pass</option>
+<option value="retry_run">retry failed official run</option>
+<option value="reset_run">reset: discard official run and start over (keeps publication state)</option>
+<option value="rereview">re-review: unpublish, clear scores, new official run with the current harness</option>
+<option value="publish_now">publish now (lift embargo)</option>
+<option value="reanchor">re-anchor hash</option>
+<option value="reindex">re-index citations</option>
+<option value="withdraw">withdraw</option>
+</select>
+<select name="harness_id">{% for h in harnesses %}<option value="{{ h.id }}">{{ h.version }}{% if h.is_draft %} (draft){% endif %}{% if h.is_current %} (current){% endif %}</option>{% endfor %}</select>
+<button>Run</button></form>
+<h2>Runs</h2>
+<table class="lb"><tr><th>Run</th><th>Kind</th><th>Harness</th><th>Stage</th><th>Committee</th><th>Decision</th><th>Creativity</th><th>Tokens</th><th>Spend</th><th></th></tr>
+{% for r in runs %}<tr><td><a href="/admin/runs/{{ r.id }}">{{ r.id }}</a></td><td>{% if r.sandbox %}sandbox{% else %}<b>official</b>{% endif %}</td><td>{{ r.harness_version }}</td><td>{{ r.stage }}</td>
+<td class="dim">{% for m in r.committee.reviewers %}{{ m.lab }} {% endfor %}/ chair {{ r.committee.chair.lab }}</td><td>{{ r.decision or '' }}</td><td>{{ r.final_scores.creativity if r.final_scores else '' }}</td><td>{{ r.total_input_tokens }}/{{ r.total_output_tokens }}</td><td>${{ '%.2f'|format(r.total_cost_usd or 0) }}</td><td class="dim">{{ r.error[:80] }}</td></tr>{% endfor %}</table>
+<h2>Jobs</h2>
+<table class="lb">{% for j in jobs %}<tr><td>{{ j.id }}</td><td>{{ j.kind }}</td><td>{{ j.status }}</td><td>{{ j.attempts }}</td><td class="dim">{{ j.last_error[:120] }}</td></tr>{% endfor %}</table>
+<h2>Abstract</h2><div class="prose">{{ paper.abstract|md|safe }}</div>
+<details><summary>Full text</summary><div class="prose">{{ paper.body_md|md|safe }}</div></details>
+{% endblock %}

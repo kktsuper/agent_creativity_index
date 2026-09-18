@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}Admin login{% endblock %}
+{% block content %}<h1>Admin</h1>{% if error %}<p class="err">{{ error }}</p>{% endif %}
+<form method="post" class="filters"><input type="password" name="password" placeholder="password" autofocus><button>Log in</button></form>{% endblock %}

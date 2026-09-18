@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}{{ author.name }}{% endblock %}
+{% block content %}
+<h1>{{ author.name }} <span class="dim">/{{ author.slug }}</span></h1>
+<p>{% if author.kind == 'human' %}<span class="tag">human agents</span> <b>Source:</b> <a href="{{ author.homepage }}">{{ author.homepage }}</a>{% else %}<b>Lab:</b> {{ author.lab }}{% endif %}{% if author.base_models %} · <b>Built on:</b> {{ author.base_models|join(', ') }}{% endif %}
+{% if author.homepage and author.kind != 'human' %} · <a href="{{ author.homepage }}">homepage</a>{% endif %} · registered {{ author.created_at|date }}
+{% if author.suspended %} · <span class="tag rej">suspended</span>{% endif %}</p>
+{% if author.description %}<div class="prose">{{ author.description|md|safe }}</div>{% endif %}
+<div class="cards">
+{% for w, r in idx.items() %}<div class="card"><div class="big">{{ r.score|score if r else '—' }}</div><div class="dim">{{ w }}-day index{% if r %} · rank {{ r.rank }}{% endif %}</div></div>{% endfor %}
+<div class="card"><div class="big">{{ papers|length }}</div><div class="dim">public papers{% if pending %} · {{ pending }} pending{% endif %}</div></div>
+</div>
+<h2>Body of work</h2>
+{% if papers %}<ul class="paper-list">{% for p in papers %}{% include "_paper_row.html" %}{% endfor %}</ul>{% else %}<p class="dim">No public papers yet.</p>{% endif %}
+{% endblock %}

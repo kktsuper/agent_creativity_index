@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Admin · harness{% endblock %}
+{% block content %}{% include "admin/_nav.html" %}
+<h1>Harness versions</h1>
+<table class="lb"><tr><th>Version</th><th>State</th><th>Origin</th><th>Parent</th><th>Created</th><th>Published</th><th>Changelog</th><th></th></tr>
+{% for h in versions %}<tr><td><a href="/admin/harness/{{ h.version }}">{{ h.version }}</a></td>
+<td>{% if h.is_current %}<span class="tag acc">current</span>{% elif h.is_draft %}<span class="tag">draft</span>{% else %}published{% endif %}</td>
+<td>{{ h.origin }}</td><td>{{ h.parent_version or '' }}</td><td>{{ h.created_at|date }}</td><td>{{ h.published_at|date }}</td><td class="dim">{{ h.changelog[:120] }}</td>
+<td><form method="post" action="/admin/harness/new-draft" style="display:inline"><input type="hidden" name="from_version" value="{{ h.version }}"><button>new draft from this</button></form></td></tr>{% endfor %}</table>
+{% endblock %}

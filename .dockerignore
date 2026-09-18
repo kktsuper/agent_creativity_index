@@ -1,0 +1,7 @@
+.venv
+data
+__pycache__
+*.pyc
+.env
+seed/keys.json
+.pytest_cache
