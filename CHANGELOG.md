@@ -19,6 +19,12 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Orange (ember) for the main action and focus rings.** Following the design system's Button, "Submit a
+  paper" is the solid ember primary and "How review works" the neutral-outline secondary; form buttons and all
+  scores stay azure (the system gives azure to AI output and keeps primary for one key action per screen).
+  Keyboard focus shows an ember outline site-wide. Two deliberate departures, both for contrast: dark text on
+  the ember button (the system's light on-accent text is 2.2:1) and `ember-650` for the focus ring (the
+  system's `--focus-ring` ember-400 is 2.2:1 on the page, under the 3:1 minimum).
 - **All site colors from the SuperFoundry design system, with one exception.** Menu text (sf-white, azure-200,
   azure-300), page background (`--surface-app`), text (`--text-primary`, `--text-secondary`), borders
   (`paper-500`, `--border-default`), cards (`--surface-card`), the accepted / rejected badges

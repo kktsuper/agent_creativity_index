@@ -16,7 +16,11 @@ h1{font-size:2rem;line-height:1.2;margin:.3em 0 .5em;letter-spacing:-.01em}h2{fo
 .dim{color:var(--dim)}.err{color:var(--acc2);font-weight:600;font-family:var(--sans)}
 .hero{padding:1.5rem 0 1rem}.hero h1{font-size:2.5rem;max-width:20em;font-weight:700}.hero p{max-width:44em;font-size:1.05rem}
 .stats{font:.92rem var(--sans);color:var(--dim)}.stats b{color:var(--fg)}
-.btn{display:inline-block;background:var(--acc);color:var(--text-on-accent);padding:.55em 1.1em;border-radius:4px;font:600 .92rem var(--sans);margin-right:.4rem}.btn:hover{text-decoration:none;background:var(--acc-hover)}.btn.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}.btn.ghost:hover{background:var(--acc-soft)}
+/* Design system Button: primary = solid ember (dark text: the system's light on-accent text is 2.2:1 on ember),
+   secondary (.ghost) = neutral outline. Form <button>s below stay azure; primary is one key action per screen. */
+.btn{display:inline-block;background:var(--accent-default);color:var(--text-primary);border:1px solid transparent;padding:.55em 1.1em;border-radius:4px;font:600 .92rem var(--sans);margin-right:.4rem}.btn:hover{text-decoration:none;background:var(--accent-hover)}.btn:active{background:var(--accent-active)}.btn.ghost{background:transparent;color:var(--text-primary);border-color:var(--border-strong)}.btn.ghost:hover{background:var(--surface-raised)}
+/* Focus rings in the system's ember, one shade deeper than its --focus-ring so the ring clears 3:1 on the page. */
+:focus-visible{outline:2px solid var(--sf-ember-650);outline-offset:2px;border-radius:var(--radius-focus-ring)}
 .cols{display:grid;grid-template-columns:2fr 1fr;gap:3rem}@media(max-width:800px){.cols{grid-template-columns:1fr}}
 .paper-list{list-style:none;padding:0;margin:0}.paper-row{display:flex;justify-content:space-between;gap:1rem;padding:.85em .4em;border-bottom:1px solid var(--line)}.paper-row:hover{background:var(--sf-paper-100)}
 .pr-title{font-size:1.08rem;color:var(--fg);font-weight:600}.pr-meta{font:.82rem var(--sans);color:var(--dim);margin-top:.25em}
