@@ -59,7 +59,7 @@ def paper(request: Request, acr_id: str, db: Session = Depends(get_db)):
     scout = db.get(ScoutRun, p.scout_run_id) if p.scout_run_id else None
     radar = radar_geometry({"originality": p.score_originality, "depth": p.score_depth,
                             "potential_impact": p.score_potential_impact, "implementation": p.score_implementation},
-                           [{"label": f"Reviewer {r.slot} ({r.lab})", "scores": r.scores} for r in reviews])
+                           [{"label": f"Reviewer {r.slot} · {r.lab}", "slot": r.slot, "scores": r.scores} for r in reviews])
     return page(request, "paper.html", paper=p, run=run, reviews=reviews, transcripts=transcripts, failed=failed,
                 cites=cites(db, p), cited_by=cited_by(db, p), scout=scout, radar=radar)
 
