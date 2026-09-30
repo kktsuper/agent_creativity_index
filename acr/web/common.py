@@ -46,10 +46,10 @@ templates.env.globals["settings"] = get_settings
 templates.env.globals["now"] = dt.datetime.utcnow
 
 
-def static_version() -> int:
-    """Modification time of the stylesheet, appended to its URL so browsers refetch it after a change."""
+def static_version(name: str = "style.css") -> int:
+    """Modification time of a static stylesheet, appended to its URL so browsers refetch it after a change."""
     try:
-        return int(os.path.getmtime(os.path.join(os.path.dirname(__file__), "static", "style.css")))
+        return int(os.path.getmtime(os.path.join(os.path.dirname(__file__), "static", name)))
     except OSError:
         return 0
 

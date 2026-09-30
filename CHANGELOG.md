@@ -19,6 +19,12 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Site blues now come from the SuperFoundry design system.** The system's tokens file is copied unchanged into
+  `acr/web/static/sf/tokens.css` (provenance in the README next to it) and loaded before `style.css`, and
+  every blue on the site now uses its azure scale: links, buttons and the chart use `azure-550` (the system's
+  blue-on-light text role), hover `azure-600`, light backgrounds `azure-100`, the header bar `azure-900`. Nothing
+  else changes: layout, neutrals and type stay as they were, and the system's ember orange is not used. All
+  new pairings pass WCAG AA contrast. The stylesheet cache-busting now covers the tokens file too.
 - **Anthropic judge on Claude Opus 5.5 (harness 1.2.1).** The Anthropic committee model moves from
   `claude-opus-5` to `claude-opus-5-5`, about 20% cheaper per token ($4 / $20 per million input / output tokens,
   against $5 / $25), with effort kept at `high` explicitly (Opus 5.5 would otherwise default to `medium`).
