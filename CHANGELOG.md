@@ -19,6 +19,10 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Score formula drawn as a tree.** The "Score" box on the home page (and the formula on "How review works") is
+  now a small hierarchy: creativity on top, novelty and impact beneath it, and the four 0–10 axes the committee
+  scores as pills. Also corrects the home page formula, which omitted the ÷ 100. Shared partial
+  `acr/web/templates/_score_tree.html`.
 - **Topic tags, steps 3 and 4 of 4: public API and backfill. The feature is complete.** Paper JSON in the
   API now carries `topic_tags`, and `/api/v1/papers?tag=llms` filters by exact tag, like the site. New command
   `python -m acr.cli backfill-tags [--dry-run] [--limit N]` tags accepted and arXiv papers whose finished

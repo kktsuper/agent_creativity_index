@@ -31,8 +31,8 @@
     </table>{% else %}<p class="dim">Nothing published in the window yet.</p>{% endif %}
     <p><a href="/index">Full leaderboard →</a></p>
     <h2>Score</h2>
-    <p class="formula">creativity = novelty × impact<br>novelty = originality × depth<br>impact = potential impact × implementation</p>
-    <p class="dim">Each axis 0–10; creativity shown on 0–100. One score per paper, fixed at decision time under the harness version that produced it.</p>
+    {% include "_score_tree.html" %}
+    <p class="dim st-foot">One score per paper, fixed at decision time under the harness version that produced it.</p>
   </aside>
 </div>
 {% endblock %}

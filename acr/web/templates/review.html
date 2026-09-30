@@ -23,7 +23,7 @@
 <table class="kv">{% for k, v in r.anchors.items() %}<tr><th>{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}</table>
 </div>
 {% endfor %}
-<p class="formula">creativity = novelty × impact · novelty = originality × depth · impact = potential impact × implementation</p>
+<div class="st-wide">{% include "_score_tree.html" %}</div>
 <p>Axes are 0–10. Novelty and impact are 0–100; creativity is their product divided by 100, so it is also 0–100. The chair's final axis scores are the paper's permanent score.</p>
 
 <h2>Committee models</h2>
