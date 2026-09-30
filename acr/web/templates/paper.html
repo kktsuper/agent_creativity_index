@@ -8,19 +8,24 @@
 {% if paper.source_kind == 'arxiv' %}· <a href="{{ paper.external_url }}">arXiv:{{ paper.external_id }}</a> <span class="dim">— benchmark paper ingested from arXiv; priority date is the arXiv submission date; full text is read at review time and not hosted here{% if scout %}; selected by <a href="/scout/{{ scout.id }}">scout run #{{ scout.id }}</a> from {{ scout.pool_size }} papers listed {{ scout.listing_date }}{% endif %}</span>{% endif %}</p>
 
 <div class="scorebox">
-  <div class="sb-main"><div class="big">{{ paper.score_creativity|score }}</div><div>creativity</div></div>
+  <div class="sb-scores">
+    <div class="sb-label">Creativity</div>
+    <div class="sb-big">{{ paper.score_creativity|score }}</div>
+    <div class="sb-sub">out of 100 · novelty × impact ÷ 100</div>
+    <div class="sb-parts">
+      <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_novelty|score }}</span><span class="sb-part-name">novelty</span></div>
+        <div class="sb-eq"><span><b>{{ paper.score_originality|score }}</b> originality</span> × <span><b>{{ paper.score_depth|score }}</b> depth</span></div></div>
+      <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_impact|score }}</span><span class="sb-part-name">impact</span></div>
+        <div class="sb-eq"><span><b>{{ paper.score_potential_impact|score }}</b> potential impact</span> × <span><b>{{ paper.score_implementation|score }}</b> implementation</span></div></div>
+    </div>
+  </div>
   {% if radar %}<div class="sb-radar">{% include "_radar.html" %}</div>{% endif %}
-  <div class="sb-grid">
-    <div><b>{{ paper.score_novelty|score }}</b> novelty<br><span class="dim">{{ paper.score_originality|score }} originality × {{ paper.score_depth|score }} depth</span></div>
-    <div><b>{{ paper.score_impact|score }}</b> impact<br><span class="dim">{{ paper.score_potential_impact|score }} potential × {{ paper.score_implementation|score }} implementation</span></div>
-  </div>
-  <div class="sb-meta">
-    <div><b>Priority</b> {{ paper.priority_at|dt }}</div>
-    <div><b>Published</b> {{ paper.public_at|dt }}{% if paper.embargo_months %} (embargo {{ paper.embargo_months }} mo){% endif %}</div>
-    <div><b>Harness</b> <a href="/review/harness/{{ paper.harness_version }}">v{{ paper.harness_version }}</a></div>
-    <div><b>Hash</b> <code title="{{ paper.content_hash }}">{{ paper.content_hash[:16] }}…</code>
-      {% if paper.anchors %}· <a href="/api/v1/papers/{{ paper.acr_id }}/anchor.ots">.ots proof</a>{% endif %}</div>
-  </div>
+  <dl class="sb-meta">
+    <div><dt>Priority</dt><dd>{{ paper.priority_at|dt }}</dd></div>
+    <div><dt>Published</dt><dd>{{ paper.public_at|dt }}{% if paper.embargo_months %} (embargo {{ paper.embargo_months }} mo){% endif %}</dd></div>
+    <div><dt>Harness</dt><dd><a href="/review/harness/{{ paper.harness_version }}">v{{ paper.harness_version }}</a></dd></div>
+    <div><dt>Hash</dt><dd><code title="{{ paper.content_hash }}">{{ paper.content_hash[:16] }}…</code>{% if paper.anchors %} · <a href="/api/v1/papers/{{ paper.acr_id }}/anchor.ots">.ots proof</a>{% endif %}</dd></div>
+  </dl>
 </div>
 
 <nav class="onpage" aria-label="On this page"><span>On this page</span>

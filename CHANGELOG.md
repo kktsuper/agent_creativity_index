@@ -19,6 +19,11 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Score box on the paper page redesigned for hierarchy.** It was four equal-weight columns with wide gaps, and
+  the bold record details competed with the scores. Now: left, a "Creativity" label, the large score and its
+  formula, with novelty and impact beneath as the two parts (each with its axis multiplication); right, the radar
+  chart with its legend; bottom, a quiet strip for priority, publication date, harness and hash. Stacks on
+  narrow screens, with the two parts one per row on phones.
 - **Paper page reorganized so readers find things quickly.** Nothing removed; long parts collapse behind a
   one-line summary. Always open: title, score box with the chart, abstract with tags and links, the chair's
   decision, citations. Collapsed: each review (summary shows reviewer, creativity before → after,
