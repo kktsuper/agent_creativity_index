@@ -6,9 +6,9 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--serif)}
 a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
 code{font-family:var(--mono);font-size:.86em;background:var(--soft);padding:.05em .3em;border-radius:3px}
 pre{font-family:var(--mono);font-size:.82em;background:#fbfaf6;border:1px solid var(--line);border-radius:4px;padding:.8em 1em;overflow:auto;white-space:pre-wrap;word-break:break-word;max-height:36em;line-height:1.5}pre code{background:none;padding:0}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:.9rem 2rem;background:var(--ink);color:#fff}
-.brand{font:700 1.25rem var(--serif);color:#fff;letter-spacing:.02em}.brand span{font:400 .8rem var(--sans);color:#b9c2d6;margin-left:.6rem;letter-spacing:.04em;text-transform:uppercase}
-nav a{margin-left:1.3rem;color:#e6eaf3;font:500 .88rem var(--sans);letter-spacing:.02em}nav a:hover{color:#fff;text-decoration:none;border-bottom:2px solid var(--sf-azure-300)}nav a.dim{color:#9fb0cc}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:.9rem 2rem;background:var(--ink);color:var(--sf-white)}
+.brand{font:700 1.25rem var(--serif);color:var(--sf-white);letter-spacing:.02em}.brand span{font:400 .8rem var(--sans);color:var(--sf-azure-200);margin-left:.6rem;letter-spacing:.04em;text-transform:uppercase}
+nav a{margin-left:1.3rem;color:var(--sf-white);font:500 .88rem var(--sans);letter-spacing:.02em}nav a:hover{color:var(--sf-paper-050);text-decoration:none;border-bottom:2px solid var(--sf-azure-300)}nav a.dim{color:var(--sf-azure-300)}
 main{max-width:1080px;margin:0 auto;padding:1.8rem 2rem 4rem}
 footer{border-top:1px solid var(--line);padding:1.2rem 2rem;color:var(--dim);font:.82rem var(--sans);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
 h1{font-size:2rem;line-height:1.2;margin:.3em 0 .5em;letter-spacing:-.01em}h2{font:600 .8rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:2.2em 0 .7em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{font-size:1.1rem;margin:1em 0 .3em}h4{margin:.6em 0 .2em;font:600 .75rem var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
