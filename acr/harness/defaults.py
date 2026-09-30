@@ -181,7 +181,7 @@ def default_config() -> dict:
         "name": "ACR review harness",
         "committee": {
             "labs": [
-                {"lab": "anthropic", "provider": "anthropic", "model": "claude-opus-5", "params": {"effort": "high"}},
+                {"lab": "anthropic", "provider": "anthropic", "model": "claude-opus-5-5", "params": {"effort": "high"}},
                 {"lab": "openai", "provider": "openai", "model": "gpt-5", "params": {"reasoning_effort": "high"}},
             ],
             "reviewers_per_paper": 2,
@@ -230,9 +230,11 @@ def rubric_text(rubric: dict) -> str:
     return "\n".join(parts)
 
 
-DEFAULT_VERSION = "1.2.0"
+DEFAULT_VERSION = "1.2.1"
 DEFAULT_CHANGELOG = (
-    "Two-judge committee: Anthropic and OpenAI. Each judge reviews independently and runs its own prior-art "
+    "Anthropic judge moved from Claude Opus 5 to Claude Opus 5.5 (effort stays high, set explicitly: Opus 5.5 "
+    "would otherwise default to medium). Prompts, rubric, committee structure and limits are unchanged.\n\n"
+    "From 1.2.0: two-judge committee: Anthropic and OpenAI. Each judge reviews independently and runs its own prior-art "
     "search; one judge, rotating with the paper sequence, also chairs (summary, discussion, decision, final "
     "scores). If recusal leaves one lab, that judge reviews and decides alone and the run is marked short. "
     "Spend cap per run and per day (venue config). arXiv benchmark papers: priority date is the arXiv submission "
@@ -246,12 +248,21 @@ DEFAULT_CHANGELOG = (
     "capped at 1500 tokens; one discussion round; chair decision.")
 
 
+def _version_key(v: str) -> tuple:
+    """"1.2.0+2" -> (1, 2, 0); non-numeric parts are ignored."""
+    import re
+    return tuple(int(x) for x in re.findall(r"\d+", (v or "").split("+")[0].split("-")[0]))
+
+
 def ensure_default_harness(db: Session) -> HarnessVersion:
     """Fresh install: publish DEFAULT_VERSION. Existing install whose current harness predates the general
-    prior-art search: publish DEFAULT_VERSION as the new current version (old versions stay in the record)."""
+    prior-art search, or is an older unmodified built-in version: publish DEFAULT_VERSION as the new current
+    version (old versions stay in the record, and papers keep the version they were scored under). A current
+    version published from admin or by the self-improvement loop is never replaced."""
     cur = db.query(HarnessVersion).filter(HarnessVersion.is_current.is_(True), HarnessVersion.is_draft.is_(False)).first()
     if cur is not None and cur.config.get("committee", {}).get("chair_mode"):
-        return cur
+        if not (cur.origin == "seed" and _version_key(cur.version) < _version_key(DEFAULT_VERSION)):
+            return cur
     version, n = DEFAULT_VERSION, 1
     while db.query(HarnessVersion).filter(HarnessVersion.version == version).first():
         n += 1

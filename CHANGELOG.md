@@ -19,6 +19,13 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Anthropic judge on Claude Opus 5.5 (harness 1.2.1).** The Anthropic committee model moves from
+  `claude-opus-5` to `claude-opus-5-5`, about 20% cheaper per token ($4 / $20 per million input / output tokens,
+  against $5 / $25), with effort kept at `high` explicitly (Opus 5.5 would otherwise default to `medium`).
+  Published as harness 1.2.1 rather than by editing 1.2.0, so a published version never changes; papers already
+  reviewed keep 1.2.0 and their scores. At startup an install still on an older unmodified built-in harness
+  moves to 1.2.1; a version published from admin or by the self-improvement loop is never replaced. Opus 5.5
+  added to the price table (`acr/pricing.py`) so spend caps count it at its real price. Not yet run live.
 - **Score formula drawn as a tree.** The "Score" box on the home page (and the formula on "How review works") is
   now a small hierarchy: creativity on top, novelty and impact beneath it, and the four 0–10 axes the committee
   scores as pills. Also corrects the home page formula, which omitted the ÷ 100. Shared partial
