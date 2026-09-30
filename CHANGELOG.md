@@ -23,16 +23,15 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Radar chart: reviewer outlines anonymous again.** Reverted the per-reviewer colors and "Reviewer N · lab"
+  legend entries. All reviewer outlines are gray, with a single legend entry "individual reviewers"; hover titles
+  no longer name the lab. The review sections below the chart are unchanged.
 - **Radar chart of the four score axes on every public paper page.** The score box now shows an inline SVG
   radar: the chair's final scores as the filled shape, each reviewer's final scores as thin gray outlines so
   disagreement is visible at a glance, values under each axis label, hover titles, a legend, and an
   accessible text description. Server-rendered, no JavaScript. Geometry in `acr/web/radar.py`, markup in
   `acr/web/templates/_radar.html`, styles in `acr/web/static/style.css`; tests in `tests/test_radar.py` and
   the end-to-end pipeline test.
-- **Radar chart: each reviewer's outline in its own color, named in the legend.** Reviewer 1 orange,
-  reviewer 2 teal, reviewer 3 violet, fixed by slot so a reviewer keeps its color across papers; the legend lists
-  "Reviewer N · lab" per outline. Colors were checked with a color-vision validator for separation from each
-  other and from the site accent. The chair's filled blue shape remains the emphasis.
 - **Stylesheet cache-busting and chart fallback colors.** The stylesheet link now carries the file's
   modification time (`/static/style.css?v=...`) so browsers refetch it after any CSS change; first seen as the
   radar rendering as a black disc on a machine that had cached the old stylesheet. The radar SVG also carries

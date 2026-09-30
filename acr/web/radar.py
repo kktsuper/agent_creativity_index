@@ -12,12 +12,6 @@ import math
 AXES = [("originality", "Originality"), ("depth", "Depth"),
         ("implementation", "Implementation"), ("potential_impact", "Potential impact")]
 
-# Reviewer outline colors, assigned by reviewer slot so a reviewer keeps its color across papers. Distinct hues,
-# validated for color-vision separation against each other and the site accent; quieter than the chair's shape
-# through a thinner stroke and no fill rather than through desaturation, which would blur them together.
-REVIEWER_COLORS = ["#d9782f", "#2a9d8f", "#8a6fc9"]
-FALLBACK_COLOR = "#9a978e"
-
 W, H = 300, 250          # viewBox
 CX, CY, R = 150, 122, 78  # centre and radius of the 10-point ring
 LINE = 13                # label line height in viewBox units
@@ -63,14 +57,11 @@ def radar_geometry(final: dict | None, reviewers: list[dict] | None = None) -> d
         return None
     main_pts = [point(i, final[k]) for i, (k, _) in enumerate(AXES)]
     others = []
-    for idx, r in enumerate(reviewers or []):
+    for r in reviewers or []:
         s = r.get("scores") or {}
         if all(isinstance(s.get(k), (int, float)) for k, _ in AXES):
-            slot = r.get("slot", idx + 1)
-            color = REVIEWER_COLORS[slot - 1] if 1 <= slot <= len(REVIEWER_COLORS) else FALLBACK_COLOR
-            label = r.get("label", f"Reviewer {slot}")
-            others.append({"label": label, "slot": slot, "color": color, "points": polygon(s),
-                           "title": label + ": " + ", ".join(f"{name} {s[k]:.1f}" for k, name in AXES)})
+            others.append({"label": r.get("label", "reviewer"), "points": polygon(s),
+                           "title": r.get("label", "reviewer") + ": " + ", ".join(f"{name} {s[k]:.1f}" for k, name in AXES)})
     return {
         "w": W, "h": H, "cx": CX, "cy": CY,
         "rings": [{"r": round(R * v / 10, 1), "label": str(int(v)) if v in (5, 10) else ""} for v in (2.5, 5, 7.5, 10)],

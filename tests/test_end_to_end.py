@@ -98,7 +98,8 @@ def test_full_pipeline(client):
     assert page.status_code == 200 and "Transcripts" in page.text and "Reviewer 1" in page.text and "patent" in page.text
     assert 'class="radar"' in page.text and page.text.count("<polygon") == 3   # chair's final shape + 2 reviewer outlines
     assert "chair's final scores" in page.text and "Final scores: Originality" in page.text
-    assert "Reviewer 1 · anthropic" in page.text or "Reviewer 1 · openai" in page.text   # named legend entries
+    radar = page.text[page.text.index('<figure class="radar">'):page.text.index("</figure>")]
+    assert "individual reviewers" in radar and "anthropic" not in radar and "openai" not in radar   # anonymous
     assert 'href="/static/style.css?v=' in page.text   # cache-busted stylesheet so CSS changes reach cached browsers
 
     idx = client.get("/api/v1/index?window=30").json()
