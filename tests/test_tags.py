@@ -55,3 +55,73 @@ def test_overlapping_reviews_share_spellings(app):
         assert not p.topic_tags
         assert normalize_tags(["Zeta-Functions", "quux widgets"], vocab) == ["zeta function", "quux widgets"]
         db.rollback()
+
+
+def _decided_paper(db, n, decision="accept", tags=None):
+    """A paper whose official run finished before tags existed (no tags on run or paper)."""
+    import datetime as dt
+    from acr.harness.defaults import current_harness
+    from acr.models import Author, Paper, ReviewRun
+    hv = current_harness(db)
+    a = db.query(Author).filter(Author.slug == "tag-backfill").first()
+    if a is None:
+        a = Author(slug="tag-backfill", name="Tag Backfill", lab="independent", api_key_hash="tag-backfill",
+                   api_key_prefix="acr_tbf")
+        db.add(a)
+    now = dt.datetime.utcnow()
+    p = Paper(acr_id=f"ACR-2026-99{n:04d}", author=a, title=f"Backfill paper {n}", abstract="An abstract.",
+              paper_type="result", field="ml", format="md", content_hash="0" * 64, priority_at=now, embargo_until=now,
+              decision=decision, status="published" if decision == "accept" else "rejected",
+              public_at=now if decision == "accept" else None, topic_tags=tags)
+    db.add(p)
+    db.flush()
+    run = ReviewRun(paper_id=p.id, harness_version_id=hv.id, harness_version=hv.version, stage="done",
+                    decision=decision, meta_review="Solid.", committee={"chair": {"lab": "anthropic", "model": "claude-opus-5",
+                                                                                    "provider": "anthropic"}})
+    db.add(run)
+    db.flush()
+    p.official_run_id = run.id
+    db.commit()
+    return p, run
+
+
+def test_backfill_tags(app):
+    from acr.db import db_session
+    from acr.models import Transcript
+    from acr.settings_store import get_setting, set_setting
+    from acr.tags import backfill_tags
+    with db_session() as db:
+        p, run = _decided_paper(db, 1)
+        rej, _ = _decided_paper(db, 2, decision="reject")
+        tagged, _ = _decided_paper(db, 3, tags=["already here"])
+        lines = []
+        backfill_tags(db, dry_run=True, log=lines.append)
+        mine = [l for l in lines if "ACR-2026-99" in l]
+        assert len(mine) == 1 and mine[0].startswith(p.acr_id) and "would tag" in mine[0]
+        assert not p.topic_tags and not db.query(Transcript).filter(Transcript.run_id == run.id).count()
+
+        lines = []
+        backfill_tags(db, log=lines.append)
+        db.refresh(p); db.refresh(run)
+        assert 2 <= len(p.topic_tags) <= 5 and p.topic_tags == run.topic_tags and p.topic_tags == normalize_tags(p.topic_tags)
+        t = db.query(Transcript).filter(Transcript.run_id == run.id).one()   # published with the run, like any call
+        assert t.stage == "tags" and t.role == "chair" and "tag backfill" in t.note
+        assert not any(l.startswith(rej.acr_id) or l.startswith(tagged.acr_id) for l in lines)
+        assert tagged.topic_tags == ["already here"] and not rej.topic_tags
+
+        lines = []   # idempotent: nothing left to do for these papers
+        backfill_tags(db, log=lines.append)
+        assert not any("ACR-2026-99" in l for l in lines)
+
+        q, qrun = _decided_paper(db, 4)   # per-run spend cap still applies
+        old_cap = get_setting(db, "spend_cap_per_run_usd", 3.0)
+        set_setting(db, "spend_cap_per_run_usd", 1.0)
+        qrun.total_cost_usd = 1.0
+        db.commit()
+        lines = []
+        r = backfill_tags(db, log=lines.append)
+        assert r["failed"] >= 1 and any(l.startswith(q.acr_id) and "FAILED" in l and "spend cap" in l for l in lines)
+        db.refresh(q)
+        assert not q.topic_tags
+        set_setting(db, "spend_cap_per_run_usd", old_cap)
+        db.commit()

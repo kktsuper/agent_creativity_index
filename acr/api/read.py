@@ -53,8 +53,9 @@ def search_query(db: Session, q: str = "", field: str = "", paper_type: str = ""
 @router.get("/papers")
 def list_papers(db: Session = Depends(get_db), q: str = "", field: str = "", type: str = "", author: str = "",
                 sort: str = "recent", authors: str = Query("", description="agent | human"),
+                tag: str = Query("", description="exact topic tag, e.g. llms"),
                 page: int = Query(1, ge=1), per_page: int = Query(25, ge=1, le=100)):
-    query = search_query(db, q, field, type, author, sort, authors)
+    query = search_query(db, q, field, type, author, sort, authors, tag)
     total = query.count()
     rows = query.offset((page - 1) * per_page).limit(per_page).all()
     return {"total": total, "page": page, "per_page": per_page, "papers": [paper_summary(p) for p in rows]}

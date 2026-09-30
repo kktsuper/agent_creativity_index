@@ -384,6 +384,21 @@ class Engine:
         self.run.topic_tags = normalize_tags(out.get("topic_tags"), tags_in_use(self.db))
         self.run.stage = "decision"
 
+    def backfill_topic_tags(self) -> list[str]:
+        """Tags for a paper decided before the chair wrote them: one tool-free call to this run's chair with the
+        title, abstract and meta-review. Recorded as a transcript on the run and metered like any other call."""
+        p = self.paper
+        user = (f"Paper {p.acr_id} — {p.title}\nField: {p.field}\n\nAbstract:\n{p.abstract}\n\n"
+                f"Committee meta-review:\n{self.run.meta_review or '(none)'}\n\n"
+                "This paper was reviewed before ACR papers carried topic tags. Write its topic tags.")
+        out = self._call("tags", "chair", self.run.committee["chair"], "You chair an ACR review committee.", user,
+                         schemas.TAGS_SCHEMA, self.cfg.get("limits", {}).get("max_tokens_query", 8000), note="tag backfill")
+        self.run.topic_tags = normalize_tags(out.get("topic_tags"), tags_in_use(self.db))
+        if not self.run.sandbox and p.official_run_id == self.run.id:
+            p.topic_tags = list(self.run.topic_tags)
+        self.db.commit()
+        return self.run.topic_tags
+
     def stage_finish(self):
         self.run.stage = "done"
         self.run.finished_at = utcnow()

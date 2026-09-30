@@ -131,6 +131,15 @@ def cmd_purge_seed(_):
         print("purged", [a.slug for a in authors])
 
 
+def cmd_backfill_tags(args):
+    """Give topic tags to papers reviewed before the chair wrote them (one small chair call per paper)."""
+    init_db()
+    from .tags import backfill_tags
+    with db_session() as db:
+        r = backfill_tags(db, limit=args.limit, dry_run=args.dry_run)
+    print(json.dumps(r, indent=1))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="acr")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -148,6 +157,8 @@ def main(argv=None):
     ia.add_argument("--pick", choices=["latest", "middle"], default="latest"); ia.add_argument("--exclude", default="", help="arXiv ids to skip, comma-separated")
     ia.set_defaults(fn=cmd_ingest_arxiv)
     sub.add_parser("purge-seed").set_defaults(fn=cmd_purge_seed)
+    bt = sub.add_parser("backfill-tags"); bt.add_argument("--limit", type=int); bt.add_argument("--dry-run", action="store_true")
+    bt.set_defaults(fn=cmd_backfill_tags)
     sc = sub.add_parser("scout-arxiv"); sc.add_argument("--categories", default="", help="comma-separated arXiv categories (default: AI/ML set)")
     sc.add_argument("--max", type=int, default=20); sc.add_argument("--min-mean", type=float, default=0.0)
     sc.add_argument("--dry-run", action="store_true", help="triage and record, but do not ingest picks"); sc.set_defaults(fn=cmd_scout)

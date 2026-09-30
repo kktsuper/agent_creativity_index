@@ -72,7 +72,10 @@ Choices made where the brief left room, with the reasoning. Change any of them i
   affect scores or the decision. Deliberately not a category system: no approved vocabulary, no hierarchy, no link
   to arXiv categories. Normalization only lowercases and reuses an existing spelling for near-identical variants
   (case, spacing, hyphens, plural "s"); synonyms such as "rl" and "reinforcement learning" stay separate. The
-  author's own `keywords` are kept apart from these.
+  author's own `keywords` are kept apart from these. Papers decided before tags existed are backfilled by
+  `backfill-tags`: one tool-free call to the paper's own chair model with the title, abstract and meta-review
+  (not the full text, to keep it cheap), stored as a `tags` transcript on the official run, so it is published and
+  counted against the per-run and daily spend caps. Rejected papers are skipped, since they are never shown.
 - **Transcripts**: every model call (system prompt, messages, response, tokens, latency, provider, model, harness
   version) is stored and published. Retries are safe: each stage checks what already exists before calling a model.
 - **Snapshots**: a paper's score and harness version are written once at decision time. Publishing a new harness

@@ -7,12 +7,7 @@ section. Keep it short: what changed, why, and where to look.
 
 Agreed changes that have not been built yet.
 
-- **Auto-generated topic tags on papers.** The review model emits a few free-form tags per paper
-  (e.g. "LLMs", "reinforcement learning", "world models"), stored on the paper, shown as clickable chips on the
-  site, filterable in the Papers listing and the public API, backfilled for already-reviewed papers. Plain
-  tagging with light normalization (lowercase, reuse near-identical spellings), explicitly not a curated
-  category taxonomy. Suggested by a colleague; scope clarified by Jad Tarifi. Steps 1 (generate and store) and
-  2 (show on the site, filter in Papers) are done, see below; still to do: the API filter, then the backfill.
+(Nothing agreed is waiting to be built. Topic tags, the last planned item, are done; see Unreleased.)
 
 Under consideration, not yet committed to: deeper prior-art search (read closest items in full, chase their
 citations, add OpenAlex / patents / code search), citation reference checking, a prompt-injection test of
@@ -24,6 +19,13 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Topic tags, steps 3 and 4 of 4: public API and backfill. The feature is complete.** Paper JSON in the
+  API now carries `topic_tags`, and `/api/v1/papers?tag=llms` filters by exact tag, like the site. New command
+  `python -m acr.cli backfill-tags [--dry-run] [--limit N]` tags accepted and arXiv papers whose finished
+  official run has none: one small call to the paper's own chair (title, abstract, meta-review), recorded as a
+  `tags` transcript on that run and counted against the per-run and daily spend caps; rejected papers are
+  skipped; safe to re-run. Checked against a database built by the pre-tags code. Originally suggested by a
+  colleague, with the scope (simple tagging, not a category system) set by Jad Tarifi.
 - **Topic tags, step 2 of 4: shown on the site.** Paper pages show the tags as clickable labels above the
   keywords; a label opens the Papers listing filtered to that tag (`/papers?tag=llm`), which shows the active
   tag with a "clear tag" link and keeps it across the other filters and pages. Matching is exact (so "llm"

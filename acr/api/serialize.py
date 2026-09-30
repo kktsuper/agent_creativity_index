@@ -20,6 +20,7 @@ def author_json(a: Author, papers: int | None = None) -> dict:
 
 def paper_summary(p: Paper) -> dict:
     return {"acr_id": p.acr_id, "title": p.title, "type": p.paper_type, "field": p.field, "keywords": p.keywords,
+            "topic_tags": p.topic_tags or [],
             "author": {"slug": p.author.slug, "name": p.author.name, "lab": p.author.lab, "kind": p.author.kind},
             "source": {"kind": p.source_kind, "external_id": p.external_id or None, "external_url": p.external_url or None},
             "priority_at": iso(p.priority_at), "public_at": iso(p.public_at), "decision": p.decision,
