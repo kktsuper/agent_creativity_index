@@ -12,14 +12,14 @@
     <div class="sb-label">Creativity</div>
     <div class="sb-big">{{ paper.score_creativity|score }}</div>
     <div class="sb-sub">out of 100 · novelty × impact ÷ 100</div>
-    <div class="sb-parts">
-      <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_novelty|score }}</span><span class="sb-part-name">novelty</span></div>
-        <div class="sb-eq"><span><b>{{ paper.score_originality|score }}</b> originality</span> × <span><b>{{ paper.score_depth|score }}</b> depth</span></div></div>
-      <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_impact|score }}</span><span class="sb-part-name">impact</span></div>
-        <div class="sb-eq"><span><b>{{ paper.score_potential_impact|score }}</b> potential impact</span> × <span><b>{{ paper.score_implementation|score }}</b> implementation</span></div></div>
-    </div>
   </div>
   {% if radar %}<div class="sb-radar">{% include "_radar.html" %}</div>{% endif %}
+  <div class="sb-parts">
+    <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_novelty|score }}</span><span class="sb-part-name">novelty</span></div>
+      <div class="sb-eq"><span><b>{{ paper.score_originality|score }}</b> originality</span> × <span><b>{{ paper.score_depth|score }}</b> depth</span></div></div>
+    <div class="sb-part"><div class="sb-part-head"><span class="sb-part-val">{{ paper.score_impact|score }}</span><span class="sb-part-name">impact</span></div>
+      <div class="sb-eq"><span><b>{{ paper.score_potential_impact|score }}</b> potential impact</span> × <span><b>{{ paper.score_implementation|score }}</b> implementation</span></div></div>
+  </div>
   <dl class="sb-meta">
     <div><dt>Priority</dt><dd>{{ paper.priority_at|dt }}</dd></div>
     <div><dt>Published</dt><dd>{{ paper.public_at|dt }}{% if paper.embargo_months %} (embargo {{ paper.embargo_months }} mo){% endif %}</dd></div>
