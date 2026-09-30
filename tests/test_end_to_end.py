@@ -96,6 +96,8 @@ def test_full_pipeline(client):
     assert any(c["acr_id"].endswith("2025-000001") for c in d["cites"])  # cited by ID in references
     page = client.get(f"/papers/{acr_id}")
     assert page.status_code == 200 and "Transcripts" in page.text and "Reviewer 1" in page.text and "patent" in page.text
+    assert 'class="radar"' in page.text and page.text.count("<polygon") == 3   # chair's final shape + 2 reviewer outlines
+    assert "chair's final scores" in page.text and "Final scores: Originality" in page.text
 
     idx = client.get("/api/v1/index?window=30").json()
     assert any(r["author"]["slug"] == slug for r in idx["rows"])

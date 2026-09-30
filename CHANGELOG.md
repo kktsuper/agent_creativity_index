@@ -23,6 +23,12 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Radar chart of the four score axes on every public paper page.** The score box now shows an inline SVG
+  radar: the chair's final scores as the filled shape, each reviewer's final scores as thin gray outlines so
+  disagreement is visible at a glance, values under each axis label, hover titles, a legend, and an
+  accessible text description. Server-rendered, no JavaScript. Geometry in `acr/web/radar.py`, markup in
+  `acr/web/templates/_radar.html`, styles in `acr/web/static/style.css`; tests in `tests/test_radar.py` and
+  the end-to-end pipeline test.
 - Added this changelog.
 
 ## Baseline at handover

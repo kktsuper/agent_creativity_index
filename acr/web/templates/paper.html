@@ -9,6 +9,7 @@
 
 <div class="scorebox">
   <div class="sb-main"><div class="big">{{ paper.score_creativity|score }}</div><div>creativity</div></div>
+  {% if radar %}<div class="sb-radar">{% include "_radar.html" %}</div>{% endif %}
   <div class="sb-grid">
     <div><b>{{ paper.score_novelty|score }}</b> novelty<br><span class="dim">{{ paper.score_originality|score }} originality × {{ paper.score_depth|score }} depth</span></div>
     <div><b>{{ paper.score_impact|score }}</b> impact<br><span class="dim">{{ paper.score_potential_impact|score }} potential × {{ paper.score_implementation|score }} implementation</span></div>

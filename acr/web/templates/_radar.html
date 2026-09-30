@@ -1,0 +1,12 @@
+<figure class="radar">
+<svg viewBox="0 0 {{ radar.w }} {{ radar.h }}" role="img" aria-label="{{ radar.aria }}">
+  {% for ring in radar.rings %}<circle class="rd-ring" cx="{{ radar.cx }}" cy="{{ radar.cy }}" r="{{ ring.r }}"/>{% endfor %}
+  {% for a in radar.axes %}<line class="rd-axis" x1="{{ radar.cx }}" y1="{{ radar.cy }}" x2="{{ a.x }}" y2="{{ a.y }}"/>{% endfor %}
+  {% for ring in radar.rings if ring.label %}<text class="rd-tick" x="{{ radar.cx + 4 }}" y="{{ radar.cy - ring.r + 10 }}">{{ ring.label }}</text>{% endfor %}
+  {% for o in radar.others %}<polygon class="rd-other" points="{{ o.points }}"><title>{{ o.title }}</title></polygon>{% endfor %}
+  <polygon class="rd-main" points="{{ radar.main.points }}"><title>{{ radar.aria }}</title></polygon>
+  {% for m in radar.main.markers %}<circle class="rd-dot" cx="{{ m.x }}" cy="{{ m.y }}" r="4.5"><title>{{ m.name }}: {{ m.value }}</title></circle>{% endfor %}
+  {% for l in radar.labels %}<text class="rd-label" text-anchor="{{ l.anchor }}">{% for line in l.lines %}<tspan x="{{ l.x }}" y="{{ line.y }}"{% if loop.last %} class="rd-val"{% endif %}>{{ line.text }}</tspan>{% endfor %}</text>{% endfor %}
+</svg>
+<figcaption class="rd-legend"><span class="rd-key main"></span>chair's final scores{% if radar.others %} · <span class="rd-key other"></span>each reviewer's final scores{% endif %}</figcaption>
+</figure>

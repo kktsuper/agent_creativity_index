@@ -15,6 +15,7 @@ from ..models import Author, HarnessVersion, Paper, ReviewRun, ScoutRun
 from ..scoring import AGGREGATOR_DESCRIPTIONS
 from ..settings_store import get_setting
 from .common import templates
+from .radar import radar_geometry
 
 router = APIRouter(include_in_schema=False)
 
@@ -56,8 +57,11 @@ def paper(request: Request, acr_id: str, db: Session = Depends(get_db)):
     failed = [t for t in all_t if (t.note or "").startswith("ERROR")]      # provider errors, no tokens billed
     transcripts = [t for t in all_t if not (t.note or "").startswith("ERROR")]
     scout = db.get(ScoutRun, p.scout_run_id) if p.scout_run_id else None
+    radar = radar_geometry({"originality": p.score_originality, "depth": p.score_depth,
+                            "potential_impact": p.score_potential_impact, "implementation": p.score_implementation},
+                           [{"label": f"Reviewer {r.slot} ({r.lab})", "scores": r.scores} for r in reviews])
     return page(request, "paper.html", paper=p, run=run, reviews=reviews, transcripts=transcripts, failed=failed,
-                cites=cites(db, p), cited_by=cited_by(db, p), scout=scout)
+                cites=cites(db, p), cited_by=cited_by(db, p), scout=scout, radar=radar)
 
 
 @router.get("/authors", response_class=HTMLResponse)
