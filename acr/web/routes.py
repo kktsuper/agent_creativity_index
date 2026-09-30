@@ -14,6 +14,7 @@ from ..leaderboard import compute_index, WINDOWS
 from ..models import Author, HarnessVersion, Paper, ReviewRun, ScoutRun
 from ..scoring import AGGREGATOR_DESCRIPTIONS
 from ..settings_store import get_setting
+from ..tags import clean_tag
 from .common import templates
 from .radar import radar_geometry
 
@@ -33,15 +34,16 @@ def home(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/papers", response_class=HTMLResponse)
 def papers(request: Request, db: Session = Depends(get_db), q: str = "", field: str = "", type: str = "",
-           sort: str = "recent", authors: str = "", page_no: int = Query(1, alias="page", ge=1)):
+           sort: str = "recent", authors: str = "", tag: str = "", page_no: int = Query(1, alias="page", ge=1)):
     per = 25
-    query = search_query(db, q, field, type, "", sort, authors)
+    tag = clean_tag(tag)
+    query = search_query(db, q, field, type, "", sort, authors, tag)
     total = query.count()
     rows = query.offset((page_no - 1) * per).limit(per).all()
     fields = [r[0] for r in db.query(Paper.field, func.count(Paper.id)).filter(Paper.public_at.isnot(None))
               .group_by(Paper.field).order_by(func.count(Paper.id).desc()).limit(30).all()]
     return page(request, "papers.html", papers=rows, total=total, page_no=page_no, pages=max(1, -(-total // per)),
-                q=q, field=field, type=type, sort=sort, authors=authors, fields=fields)
+                q=q, field=field, type=type, sort=sort, authors=authors, tag=tag, fields=fields)
 
 
 @router.get("/papers/{acr_id}", response_class=HTMLResponse)

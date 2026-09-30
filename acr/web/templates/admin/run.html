@@ -9,6 +9,7 @@
 <tr><th>Committee</th><td>{% for m in run.committee.reviewers %}R{{ m.slot }} {{ m.lab }}/{{ m.model }}; {% endfor %} chair {{ run.committee.chair.lab }}/{{ run.committee.chair.model }} · recused {{ run.committee.recused }}</td></tr>
 <tr><th>Rebuttal</th><td>opens {{ run.rebuttal_opens_at|dt }} · deadline {{ run.rebuttal_deadline|dt }} · submitted {{ run.rebuttal_submitted_at|dt }} ({{ run.rebuttal_tokens }} tok)</td></tr>
 <tr><th>Decision</th><td>{{ run.decision }} · {{ run.final_scores }}</td></tr>
+<tr><th>Topic tags</th><td>{{ (run.topic_tags or [])|join(', ') or '—' }}</td></tr>
 <tr><th>Prior art</th><td>{{ run.prior_art['items']|length if run.prior_art else 0 }} items · queries {{ run.prior_art.queries if run.prior_art else '' }} · errors {{ run.prior_art.errors if run.prior_art else '' }}</td></tr>
 </table>
 {% if run.meta_review %}<h2>Meta-review</h2><div class="prose">{{ run.meta_review|md|safe }}</div>{% endif %}

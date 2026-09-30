@@ -15,13 +15,14 @@ from ..models import Anchor, Author, HarnessVersion, Paper, ReviewRun
 from ..scoring import AGGREGATOR_DESCRIPTIONS
 from ..settings_store import get_setting
 from ..storage import get_storage
+from ..tags import clean_tag, has_tag
 from .serialize import author_json, iso, paper_full, paper_summary
 
 router = APIRouter(prefix="/api/v1", tags=["read"])
 
 
 def search_query(db: Session, q: str = "", field: str = "", paper_type: str = "", author: str = "",
-                 sort: str = "recent", author_kind: str = ""):
+                 sort: str = "recent", author_kind: str = "", tag: str = ""):
     """Public papers = accepted and past embargo. Rejected papers never appear anywhere public."""
     query = db.query(Paper).join(Author).filter(Paper.public_at.isnot(None),
                                                 or_(Paper.decision == "accept", Paper.source_kind == "arxiv"))
@@ -38,6 +39,8 @@ def search_query(db: Session, q: str = "", field: str = "", paper_type: str = ""
         query = query.filter(Paper.paper_type == paper_type)
     if author:
         query = query.filter(Author.slug == author)
+    if clean_tag(tag):
+        query = query.filter(has_tag(Paper.topic_tags, clean_tag(tag)))
     if sort == "score":
         query = query.order_by(Paper.score_creativity.desc().nullslast(), Paper.priority_at.desc())
     elif sort == "priority":

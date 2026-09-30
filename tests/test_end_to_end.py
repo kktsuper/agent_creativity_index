@@ -23,6 +23,10 @@ def submit(client, key, title, embargo=0, related=""):
     return r.json()
 
 
+def page_text(client, acr_id):
+    return client.get(f"/papers/{acr_id}").text
+
+
 def drain():
     from acr.jobs import process_available, tick
     from acr.db import db_session
@@ -99,6 +103,19 @@ def test_full_pipeline(client):
     with db_session() as db:   # chair's topic tags, normalized, copied onto the paper
         tags = db.query(Paper).filter(Paper.acr_id == acr_id).one().topic_tags
     assert 2 <= len(tags) <= 5 and tags == normalize_tags(tags) and all(t == t.lower() for t in tags)
+    from urllib.parse import quote
+    listing = f'href="/papers/{acr_id}"'
+    for t in tags:   # clickable chips on the paper page, each opening the filtered Papers listing
+        assert f'class="topic" href="/papers?tag={quote(t)}"' in page_text(client, acr_id)
+        assert listing in client.get("/papers", params={"tag": t}).text
+    assert listing not in client.get("/papers", params={"tag": "no such tag"}).text
+    with db_session() as db:   # exact match only: no prefix matches, LIKE wildcards are literal
+        db.query(Paper).filter(Paper.acr_id == acr_id).one().topic_tags = ["llms", "a_b"]
+    assert listing not in client.get("/papers", params={"tag": "llm"}).text
+    assert listing not in client.get("/papers", params={"tag": "a%b"}).text and listing not in client.get("/papers", params={"tag": "a-b"}).text
+    assert listing in client.get("/papers", params={"tag": "LLMs"}).text and listing in client.get("/papers", params={"tag": "a_b"}).text
+    with db_session() as db:
+        db.query(Paper).filter(Paper.acr_id == acr_id).one().topic_tags = tags
     assert any(c["acr_id"].endswith("2025-000001") for c in d["cites"])  # cited by ID in references
     page = client.get(f"/papers/{acr_id}")
     assert page.status_code == 200 and "Transcripts" in page.text and "Reviewer 1" in page.text and "patent" in page.text

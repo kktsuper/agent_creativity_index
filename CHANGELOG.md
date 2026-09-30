@@ -11,8 +11,8 @@ Agreed changes that have not been built yet.
   (e.g. "LLMs", "reinforcement learning", "world models"), stored on the paper, shown as clickable chips on the
   site, filterable in the Papers listing and the public API, backfilled for already-reviewed papers. Plain
   tagging with light normalization (lowercase, reuse near-identical spellings), explicitly not a curated
-  category taxonomy. Suggested by a colleague; scope clarified by Jad Tarifi. Step 1 (generate and store) is
-  done, see below; still to do: show on the site, filter in Papers and the API, backfill.
+  category taxonomy. Suggested by a colleague; scope clarified by Jad Tarifi. Steps 1 (generate and store) and
+  2 (show on the site, filter in Papers) are done, see below; still to do: the API filter, then the backfill.
 
 Under consideration, not yet committed to: deeper prior-art search (read closest items in full, chase their
 citations, add OpenAlex / patents / code search), citation reference checking, a prompt-injection test of
@@ -24,6 +24,14 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Topic tags, step 2 of 4: shown on the site.** Paper pages show the tags as clickable labels above the
+  keywords; a label opens the Papers listing filtered to that tag (`/papers?tag=llm`), which shows the active
+  tag with a "clear tag" link and keeps it across the other filters and pages. Matching is exact (so "llm"
+  does not match "llms") and works on both SQLite and Postgres (`has_tag` in `acr/tags.py`). The admin run page
+  shows the run's normalized tags. Papers reviewed before step 1 show no labels until the backfill.
+- **Topic tags: spelling reuse fixed for overlapping reviews.** Step 1 took existing spellings only from tags
+  already copied onto papers, which happens when a review finishes, so two reviews in flight at once could store
+  "llm" and "llms". Spellings now come from every official run, oldest first; sandbox runs are ignored.
 - **Tests no longer inherit a registration token from a local `.env`.** With `ACR_REGISTRATION_TOKEN` set in
   a developer's `.env` or shell, five end-to-end tests failed at author registration (403). `tests/conftest.py`
   now forces it empty, like the other settings it pins.

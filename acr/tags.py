@@ -54,11 +54,23 @@ def normalize_tags(raw_tags, existing: list[str] | None = None) -> list[str]:
     return out
 
 
+def has_tag(column, tag: str):
+    """SQL condition: the JSON list in `column` contains exactly `tag`. Matches the tag's quoted JSON text, so it
+    works the same on SQLite and Postgres and "llm" does not match "llms"; LIKE wildcards are escaped."""
+    import json
+    from sqlalchemy import String, cast
+    return cast(column, String).contains(json.dumps(tag), autoescape=True)
+
+
 def tags_in_use(db) -> list[str]:
-    """Every tag already stored on a paper, in first-seen order, for spelling reuse."""
-    from .models import Paper
+    """Every tag already written by an official run, oldest run first, for spelling reuse. Reads runs rather than
+    papers because a paper only receives its tags when its run finishes, and overlapping reviews must still see
+    each other's spellings. Sandbox runs are left out so admin test reviews never shape the vocabulary."""
+    from .models import ReviewRun
     seen: dict[str, None] = {}
-    for (tags,) in db.query(Paper.topic_tags).filter(Paper.topic_tags.isnot(None)):
+    rows = (db.query(ReviewRun.topic_tags).filter(ReviewRun.sandbox.is_(False), ReviewRun.topic_tags.isnot(None))
+            .order_by(ReviewRun.id))
+    for (tags,) in rows:
         for t in tags or []:
             seen.setdefault(t, None)
     return list(seen)

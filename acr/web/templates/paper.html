@@ -25,6 +25,7 @@
 
 <h2>Abstract</h2>
 <div class="prose">{{ paper.abstract|md|safe }}</div>
+{% if paper.topic_tags %}<p class="topics" aria-label="Topic tags">{% for t in paper.topic_tags %}<a class="topic" href="/papers?tag={{ t|urlencode }}">{{ t }}</a>{% endfor %}</p>{% endif %}
 {% if paper.keywords %}<p class="dim">Keywords: {{ paper.keywords|join(', ') }}</p>{% endif %}
 <p>{% if paper.source_kind == 'arxiv' %}<a href="{{ paper.external_url }}">Read on arXiv</a>{% else %}<a href="/api/v1/papers/{{ paper.acr_id }}/source">Source ({{ paper.format }})</a>{% endif %} ·
 <a href="/api/v1/papers/{{ paper.acr_id }}">JSON</a>
