@@ -21,7 +21,7 @@ Changes on the working branch that are not yet merged.
 
 - **Shorter main menu.** Eight equal links become Papers · Authors · Index · About ▾ · Submit. "About" opens
   a dropdown with How review works, Rules, Scout and API, each with a one-line description. Submit is a small
-  outlined button, the one action in the bar. The dropdown is a native `<details>` element, so it works without
+  ember button (dark text, 7.5:1), the one action in the bar. The dropdown is a native `<details>` element, so it works without
   JavaScript; a three-line script adds closing on an outside click or Esc. On phones the whole menu fits on
   one row and the dropdown spans the header width.
 - **Score box on the paper page redesigned for hierarchy.** It was four equal-weight columns with wide gaps, and
