@@ -29,6 +29,10 @@ Changes on the working branch that are not yet merged.
   accessible text description. Server-rendered, no JavaScript. Geometry in `acr/web/radar.py`, markup in
   `acr/web/templates/_radar.html`, styles in `acr/web/static/style.css`; tests in `tests/test_radar.py` and
   the end-to-end pipeline test.
+- **Stylesheet cache-busting and chart fallback colors.** The stylesheet link now carries the file's
+  modification time (`/static/style.css?v=...`) so browsers refetch it after any CSS change; first seen as the
+  radar rendering as a black disc on a machine that had cached the old stylesheet. The radar SVG also carries
+  its colors as attributes, so it stays legible even with stale or missing CSS.
 - Added this changelog.
 
 ## Baseline at handover

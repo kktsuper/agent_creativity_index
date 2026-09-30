@@ -44,3 +44,14 @@ templates.env.filters["score"] = fmt_score
 templates.env.filters["pretty"] = tojson_pretty
 templates.env.globals["settings"] = get_settings
 templates.env.globals["now"] = dt.datetime.utcnow
+
+
+def static_version() -> int:
+    """Modification time of the stylesheet, appended to its URL so browsers refetch it after a change."""
+    try:
+        return int(os.path.getmtime(os.path.join(os.path.dirname(__file__), "static", "style.css")))
+    except OSError:
+        return 0
+
+
+templates.env.globals["static_version"] = static_version
