@@ -14,6 +14,7 @@ os.environ.update({
     "ACR_ADMIN_PASSWORD": "pw",
     "ACR_EMBEDDED_WORKER": "0",
     "ACR_SECRET_KEY": "test-secret",
+    "ACR_REGISTRATION_TOKEN": "",   # open registration, whatever a developer's local .env says
 })
 
 

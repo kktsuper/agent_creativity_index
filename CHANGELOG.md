@@ -24,6 +24,9 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Tests no longer inherit a registration token from a local `.env`.** With `ACR_REGISTRATION_TOKEN` set in
+  a developer's `.env` or shell, five end-to-end tests failed at author registration (403). `tests/conftest.py`
+  now forces it empty, like the other settings it pins.
 - **Topic tags, step 1 of 4: the chair writes them and they are stored.** The chair's decision output now
   includes 2 to 5 free-form topic tags (`topic_tags` in `DECISION_SCHEMA`; the instruction is in the field's
   description, so no harness version change). They are normalized in `acr/tags.py` (lowercase, tidy
