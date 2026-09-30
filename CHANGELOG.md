@@ -19,6 +19,14 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **All site colors from the SuperFoundry design system, with one exception.** Menu text (sf-white, azure-200,
+  azure-300), page background (`--surface-app`), text (`--text-primary`, `--text-secondary`), borders
+  (`paper-500`, `--border-default`), cards (`--surface-card`), the accepted / rejected badges
+  (`--text-success`, `--text-error` on their muted fills) and the reviewer outlines (`char-300`) now use design
+  system tokens. Exception: small grey text keeps the site's own `#6d6a62`, because the system's lightest text
+  tone (`--text-tertiary`, `#7a7168`) is 4.17:1 on its page background, below the 4.5:1 AA minimum. The two
+  faint card shadows are also kept, since the system's shadows are much heavier. Subtle visual change: a
+  slightly warmer background and off-white cards.
 - **Site blues now come from the SuperFoundry design system.** The system's tokens file is copied unchanged into
   `acr/web/static/sf/tokens.css` (provenance in the README next to it) and loaded before `style.css`, and
   every blue on the site now uses its azure scale: links, buttons and the chart use `azure-550` (the system's
