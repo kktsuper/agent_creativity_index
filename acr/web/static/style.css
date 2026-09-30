@@ -68,7 +68,17 @@ table.kv th{text-align:left;color:var(--dim);font-weight:600;padding:.35em .8em 
 .topic{display:inline-block;font:.78rem var(--sans);padding:.15em .65em;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);text-decoration:none}
 a.topic:hover{border-color:var(--acc);color:var(--acc)}.topic.on{border-color:var(--acc);color:var(--acc)}
 .decision{background:var(--card);border-left:4px solid var(--ok);border-radius:0 6px 6px 0;padding:.6em 1.1em;margin:.5em 0}
-details.review{background:var(--card);border:1px solid var(--line);border-radius:6px;margin:.7em 0;padding:.5em 1em}details.review summary{cursor:pointer;font:600 .92rem var(--sans)}
+.onpage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1rem;font:.85rem var(--sans);margin:.2rem 0 0;padding:.55rem 0;border-bottom:1px solid var(--line)}.onpage a{margin:0;color:var(--acc);font:500 .88rem var(--sans);letter-spacing:0}.onpage a:hover{color:var(--acc-hover);border-bottom:0;text-decoration:underline}
+.onpage span{color:var(--dim);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.72rem}
+section[id]{scroll-margin-top:1rem}
+details.fold{background:var(--card);border:1px solid var(--line);border-radius:6px;margin:.6em 0}
+details.fold>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.2rem 1rem;padding:.7em 1em;font:600 .95rem var(--sans)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary>span:first-child::before{content:"";display:inline-block;width:.45em;height:.45em;margin:0 .6em .12em 0;border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:rotate(-45deg);transition:transform var(--duration-fast) var(--ease-standard)}
+details.fold[open]>summary>span:first-child::before{transform:rotate(45deg)}
+details.fold>summary:hover{background:var(--sf-paper-100)}details.fold[open]>summary{border-bottom:1px solid var(--line)}
+.sum-meta{font:400 .84rem var(--sans);color:var(--dim)}
+.fold-body{padding:.2em 1em .9em}
 .review-body ul{margin:.2em 0 .6em}.review-body p{margin:.6em 0}
 details.transcript{border-left:2px solid var(--line);padding:.2em .9em;margin:.35em 0;font-size:.9rem}details.transcript summary{cursor:pointer;font:.85rem var(--sans);color:var(--dim)}
 details.transcript[open]{border-left-color:var(--acc)}

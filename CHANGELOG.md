@@ -19,6 +19,12 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Paper page reorganized so readers find things quickly.** Nothing removed; long parts collapse behind a
+  one-line summary. Always open: title, score box with the chart, abstract with tags and links, the chair's
+  decision, citations. Collapsed: each review (summary shows reviewer, creativity before → after,
+  recommendation), the full paper text (word count), and a "Review record" group holding the rebuttal, the
+  prior-art search (items found / discarded) and the transcripts (model calls, cost). An "On this page" row
+  jumps to each section. Page height for a typical paper drops from about 5,100px to 1,900px. No JavaScript.
 - **Orange (ember) for the main action and focus rings.** Following the design system's Button, "Submit a
   paper" is the solid ember primary and "How review works" the neutral-outline secondary; form buttons and all
   scores stay azure (the system gives azure to AI output and keeps primary for one key action per screen).

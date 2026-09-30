@@ -127,6 +127,10 @@ def test_full_pipeline(client):
     radar = page.text[page.text.index('<figure class="radar">'):page.text.index("</figure>")]
     assert "individual reviewers" in radar and "anthropic" not in radar and "openai" not in radar   # anonymous
     assert 'href="/static/style.css?v=' in page.text   # cache-busted stylesheet so CSS changes reach cached browsers
+    import re as _re   # long sections start collapsed; every "On this page" link has a target
+    assert '<details class="fold review">' in page.text and "<details class=\"fold review\" open" not in page.text
+    for anchor in _re.findall(r'<a href="#([a-z]+)">', page.text[page.text.index('class="onpage"'):page.text.index("</nav>", page.text.index('class="onpage"'))]):
+        assert f'<section id="{anchor}">' in page.text, anchor
 
     idx = client.get("/api/v1/index?window=30").json()
     assert any(r["author"]["slug"] == slug for r in idx["rows"])
