@@ -19,6 +19,7 @@ from ..pricing import cost_usd, projected_call_usd
 from ..scoring import derive, mean_axes, AXES
 from ..settings_store import get_setting
 from ..storage import get_storage
+from ..tags import normalize_tags, tags_in_use
 from . import schemas
 from .committee import assign_committee
 from .defaults import render, rubric_text
@@ -380,6 +381,7 @@ class Engine:
         self.run.final_scores = derive(axes)
         self.run.decision = out.get("decision") if out.get("decision") in ("accept", "reject") else "reject"
         self.run.meta_review = out.get("meta_review", "")
+        self.run.topic_tags = normalize_tags(out.get("topic_tags"), tags_in_use(self.db))
         self.run.stage = "decision"
 
     def stage_finish(self):
@@ -394,6 +396,7 @@ class Engine:
         p.score_originality, p.score_depth = fs["originality"], fs["depth"]
         p.score_potential_impact, p.score_implementation = fs["potential_impact"], fs["implementation"]
         p.score_novelty, p.score_impact, p.score_creativity = fs["novelty"], fs["impact"], fs["creativity"]
+        p.topic_tags = list(self.run.topic_tags or [])
         # Accepted papers wait for the embargo and then publish; rejected papers never enter the public record.
         p.status = "decided" if (p.decision == "accept" or p.source_kind == "arxiv") else "rejected"
 

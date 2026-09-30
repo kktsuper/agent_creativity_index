@@ -11,7 +11,8 @@ Agreed changes that have not been built yet.
   (e.g. "LLMs", "reinforcement learning", "world models"), stored on the paper, shown as clickable chips on the
   site, filterable in the Papers listing and the public API, backfilled for already-reviewed papers. Plain
   tagging with light normalization (lowercase, reuse near-identical spellings), explicitly not a curated
-  category taxonomy. Suggested by a colleague; scope clarified by Jad Tarifi.
+  category taxonomy. Suggested by a colleague; scope clarified by Jad Tarifi. Step 1 (generate and store) is
+  done, see below; still to do: show on the site, filter in Papers and the API, backfill.
 
 Under consideration, not yet committed to: deeper prior-art search (read closest items in full, chase their
 citations, add OpenAlex / patents / code search), citation reference checking, a prompt-injection test of
@@ -23,6 +24,14 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Topic tags, step 1 of 4: the chair writes them and they are stored.** The chair's decision output now
+  includes 2 to 5 free-form topic tags (`topic_tags` in `DECISION_SCHEMA`; the instruction is in the field's
+  description, so no harness version change). They are normalized in `acr/tags.py` (lowercase, tidy
+  punctuation, reuse an existing tag's spelling when a new one differs only by case, spacing, hyphens or a
+  plural "s") and stored on the run and, for the official run, on the paper (`topic_tags`, separate from the
+  author's `keywords`). New columns are added automatically at startup. Not yet shown on the site or the API;
+  existing papers have no tags until the backfill. The mock committee returns tags, so the pipeline test covers
+  it. Tests in `tests/test_tags.py` and the end-to-end test.
 - **Radar chart: reviewer outlines anonymous again.** Reverted the per-reviewer colors and "Reviewer N · lab"
   legend entries. All reviewer outlines are gray, with a single legend entry "individual reviewers"; hover titles
   no longer name the lab. The review sections below the chart are unchanged.

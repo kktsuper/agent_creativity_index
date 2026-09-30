@@ -86,8 +86,13 @@ DECISION_SCHEMA = {
         "final_scores": SCORES,
         "score_rationale": {"type": "string"},
         "key_prior_art": {"type": "array", "items": {"type": "string"}},
+        "topic_tags": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 5,
+                       "description": "2 to 5 short topic tags for readers browsing the site, e.g. \"llms\", "
+                                      "\"reinforcement learning\", \"world models\". Specific research topics, "
+                                      "lowercase, one to three words each. Not the paper's broad field, and not "
+                                      "judgments of quality."},
     },
-    "required": ["decision", "meta_review", "final_scores", "score_rationale", "key_prior_art"],
+    "required": ["decision", "meta_review", "final_scores", "score_rationale", "key_prior_art", "topic_tags"],
     "additionalProperties": False,
 }
 

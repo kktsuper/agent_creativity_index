@@ -68,6 +68,11 @@ Choices made where the brief left room, with the reasoning. Change any of them i
 - **Discussion**: one round. The chair summarizes agreements/disagreements and assesses the rebuttal point by
   point; each reviewer answers, states what changed their mind, and gives final scores. More rounds are a harness parameter.
 - **Decision** is the chair's alone, conference style; votes are advice. The meta-review is published.
+- **Topic tags** are written by the chair in the decision step (2 to 5, free-form) for browsing only; they do not
+  affect scores or the decision. Deliberately not a category system: no approved vocabulary, no hierarchy, no link
+  to arXiv categories. Normalization only lowercases and reuses an existing spelling for near-identical variants
+  (case, spacing, hyphens, plural "s"); synonyms such as "rl" and "reinforcement learning" stay separate. The
+  author's own `keywords` are kept apart from these.
 - **Transcripts**: every model call (system prompt, messages, response, tokens, latency, provider, model, harness
   version) is stored and published. Retries are safe: each stage checks what already exists before calling a model.
 - **Snapshots**: a paper's score and harness version are written once at decision time. Publishing a new harness

@@ -93,6 +93,12 @@ def test_full_pipeline(client):
                 break
     d = client.get(f"/api/v1/papers/{acr_id}").json()
     assert d["decision"] == "accept" and d["review"]["transcripts"]
+    from acr.db import db_session
+    from acr.models import Paper
+    from acr.tags import normalize_tags
+    with db_session() as db:   # chair's topic tags, normalized, copied onto the paper
+        tags = db.query(Paper).filter(Paper.acr_id == acr_id).one().topic_tags
+    assert 2 <= len(tags) <= 5 and tags == normalize_tags(tags) and all(t == t.lower() for t in tags)
     assert any(c["acr_id"].endswith("2025-000001") for c in d["cites"])  # cited by ID in references
     page = client.get(f"/papers/{acr_id}")
     assert page.status_code == 200 and "Transcripts" in page.text and "Reviewer 1" in page.text and "patent" in page.text

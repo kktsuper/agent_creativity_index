@@ -27,6 +27,8 @@ def _fill(schema: dict, seed: str, path: str = "") -> object:
     if t == "array":
         if "quer" in path and schema.get("items", {}).get("type") == "string":
             return _title_queries(seed)
+        if path.endswith("tags"):
+            return _mock_tags(seed)
         n = 2 if schema.get("items", {}).get("type") in ("string", "object") else 1
         if "arxiv_id" in schema.get("items", {}).get("properties", {}) and _IDS_CACHE.get(seed):
             n = len(_IDS_CACHE[seed])
@@ -56,6 +58,16 @@ def _fill(schema: dict, seed: str, path: str = "") -> object:
 
 _TITLE_CACHE: dict[str, list[str]] = {}
 _IDS_CACHE: dict[str, list[str]] = {}
+
+
+# Mixed spellings on purpose, so the mock pipeline exercises tag normalization ("LLMs" / "llm").
+_TAG_POOL = ["LLMs", "llm", "Reinforcement Learning", "world models", "combinatorics", "graph theory",
+             "theorem proving", "optimization", "Video Generation", "robotics"]
+
+
+def _mock_tags(seed: str) -> list[str]:
+    start = _h(seed, "tags") % len(_TAG_POOL)
+    return [_TAG_POOL[(start + 3 * i) % len(_TAG_POOL)] for i in range(3)]
 
 
 def _title_queries(seed: str) -> list[str]:

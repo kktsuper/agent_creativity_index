@@ -63,7 +63,8 @@ class Paper(Base):
     abstract: Mapped[str] = mapped_column(Text)
     paper_type: Mapped[str] = mapped_column(String(16))         # proposal | result
     field: Mapped[str] = mapped_column(String(120), index=True)
-    keywords: Mapped[list] = mapped_column(JSON, default=list)
+    keywords: Mapped[list] = mapped_column(JSON, default=list)                   # author-supplied (arXiv: categories)
+    topic_tags: Mapped[list] = mapped_column(JSON, default=list)                 # chair-generated, normalized (acr/tags.py)
     format: Mapped[str] = mapped_column(String(8))              # md | pdf | arxiv
     source_kind: Mapped[str] = mapped_column(String(16), default="submission", index=True)  # submission | arxiv
     external_id: Mapped[str] = mapped_column(String(64), default="", index=True)   # e.g. arXiv id 2509.01234
@@ -187,6 +188,7 @@ class ReviewRun(Base):
     decision: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
     meta_review: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     final_scores: Mapped[dict] = mapped_column(JSON, default=dict)   # {originality, depth, potential_impact, implementation, novelty, impact, creativity}
+    topic_tags: Mapped[list] = mapped_column(JSON, default=list)     # chair's tags, normalized; copied to the paper by the official run
     error: Mapped[str] = mapped_column(Text, default="")
     total_input_tokens: Mapped[int] = mapped_column(Integer, default=0)
     total_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
