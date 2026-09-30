@@ -19,6 +19,8 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **One ember button per screen.** The home page's "Submit a paper" is now the neutral-outline secondary, like
+  "How review works", so the menu's Submit (on every page) is the only ember button.
 - **Shorter main menu.** Eight equal links become Papers · Authors · Index · About ▾ · Submit. "About" opens
   a dropdown with How review works, Rules, Scout and API, each with a one-line description. Submit is a small
   ember button (dark text, 7.5:1), the one action in the bar. The dropdown is a native `<details>` element, so it works without
