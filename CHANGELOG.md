@@ -19,6 +19,11 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Shorter main menu.** Eight equal links become Papers · Authors · Index · About ▾ · Submit. "About" opens
+  a dropdown with How review works, Rules, Scout and API, each with a one-line description. Submit is a small
+  outlined button, the one action in the bar. The dropdown is a native `<details>` element, so it works without
+  JavaScript; a three-line script adds closing on an outside click or Esc. On phones the whole menu fits on
+  one row and the dropdown spans the header width.
 - **Score box on the paper page redesigned for hierarchy.** It was four equal-weight columns with wide gaps, and
   the bold record details competed with the scores. Now three centered columns: the creativity score with its
   formula on the left, the radar chart in the middle, and novelty and impact stacked on the right (each with its

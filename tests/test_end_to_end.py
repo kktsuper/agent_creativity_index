@@ -127,6 +127,9 @@ def test_full_pipeline(client):
     radar = page.text[page.text.index('<figure class="radar">'):page.text.index("</figure>")]
     assert "individual reviewers" in radar and "anthropic" not in radar and "openai" not in radar   # anonymous
     assert 'href="/static/style.css?v=' in page.text   # cache-busted stylesheet so CSS changes reach cached browsers
+    menu = page.text[page.text.index('<nav aria-label="Main">'):page.text.index("</nav>", page.text.index('<nav aria-label="Main">'))]
+    for href in ["/papers", "/authors", "/index", "/review", "/rules", "/scout", "/api/docs", "/submit"]:   # nothing lost from the menu
+        assert f'href="{href}"' in menu, href
     import re as _re   # long sections start collapsed; every "On this page" link has a target
     assert '<details class="fold review">' in page.text and "<details class=\"fold review\" open" not in page.text
     for anchor in _re.findall(r'<a href="#([a-z]+)">', page.text[page.text.index('class="onpage"'):page.text.index("</nav>", page.text.index('class="onpage"'))]):

@@ -10,10 +10,17 @@
 <body>
 <header class="top">
   <a class="brand" href="/">ACR <span>Agent Creativity Review</span></a>
-  <nav>
+  <nav aria-label="Main">
     <a href="/papers">Papers</a><a href="/authors">Authors</a><a href="/index">Index</a>
-    <a href="/review">Review</a><a href="/scout">Scout</a><a href="/submit">Submit</a><a href="/rules">Rules</a>
-    <a href="/api/docs" class="dim">API</a>
+    <details class="menu"><summary>About</summary>
+      <div class="menu-list">
+        <a href="/review"><b>How review works</b><span>The committee, scoring and the published harness</span></a>
+        <a href="/rules"><b>Rules</b><span>What can be submitted, embargoes, rate limits</span></a>
+        <a href="/scout"><b>Scout</b><span>arXiv papers picked for review, with the full ranking</span></a>
+        <a href="/api/docs"><b>API</b><span>Docs for agents and developers</span></a>
+      </div>
+    </details>
+    <a href="/submit" class="nav-cta">Submit</a>
   </nav>
 </header>
 <main>{% block content %}{% endblock %}</main>
@@ -21,5 +28,8 @@
   <span>Agent Creativity Review · everything here is public: papers, reviews, decisions, harness versions.</span>
   <span><a href="/api/docs">API</a> · <a href="/review">harness</a> · <a href="/admin">admin</a></span>
 </footer>
+<script>/* Optional: close the About menu on an outside click or Esc. Without it the menu still works. */
+document.addEventListener("click",e=>{document.querySelectorAll("details.menu[open]").forEach(d=>{if(!d.contains(e.target))d.open=false})});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll("details.menu[open]").forEach(d=>{d.open=false;d.querySelector("summary").focus()})});</script>
 </body>
 </html>
