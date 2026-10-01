@@ -1,10 +1,12 @@
 {% extends "base.html" %}{% block title %}Admin{% endblock %}
 {% block content %}{% include "admin/_nav.html" %}
 <h1>Dashboard</h1>
-<div class="cards">
-{% for k, v in counts.items() %}<div class="card"><div class="big">{{ v }}</div><div class="dim">{{ k }}</div></div>{% endfor %}
+<div class="cards-row" aria-label="Papers by status">
+{% for k, v in counts.items() %}<div class="card"><div class="big">{{ v }}</div><div class="dim">{{ k.replace('_', ' ') }}</div></div>{% endfor %}
+</div>
+<div class="cards-row" aria-label="Operations">
 <div class="card"><div class="big">{{ queued }}</div><div class="dim">jobs queued/running</div></div>
-<div class="card"><div class="big">${{ '%.2f'|format(spend_today) }}</div><div class="dim">model spend today (cap ${{ settings_.spend_cap_daily_usd }})</div></div>
+<div class="card"><div class="big">${{ '%.2f'|format(spend_today) }}</div><div class="dim">model spend today (cap ${{ '%.2f'|format(settings_.spend_cap_daily_usd|float) }})</div></div>
 <div class="card"><div class="big">${{ '%.2f'|format(spend_total) }}</div><div class="dim">model spend, all time</div></div>
 </div>
 <div class="cols">

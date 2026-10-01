@@ -19,6 +19,9 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-10-01
 
+- **Admin dashboard cards in two even rows.** Row one has one card per paper status, sharing the width equally
+  and sorted in pipeline order (received → in review → … → published → rejected) with readable labels; row two
+  has jobs, spend today and spend all time. The daily cap now shows as "$50.00" rather than "$50.0".
 - **Quieter paper rows in lists.** In the Papers list, the home feed and author pages, each row now reads
   "author · type · field · date · ID": the word "priority" is gone from every row (the date's tooltip says
   "Priority date", and one line above each list says dates are priority dates), and the ACR ID moves to the

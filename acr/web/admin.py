@@ -61,6 +61,8 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     hv = current_harness(db)
     providers = [(m, *provider_available(m)) for m in hv.config["committee"]["labs"]]
     counts = dict(db.query(Paper.status, func.count(Paper.id)).group_by(Paper.status).all())
+    order = ["received", "in_review", "rebuttal", "discussion", "decided", "published", "rejected", "desk_rejected", "withdrawn"]
+    counts = dict(sorted(counts.items(), key=lambda kv: (order.index(kv[0]) if kv[0] in order else len(order), kv[0])))
     recent = db.query(Paper).order_by(Paper.id.desc()).limit(15).all()
     failed_jobs = db.query(Job).filter(Job.status == "failed").order_by(Job.id.desc()).limit(10).all()
     queued = db.query(func.count(Job.id)).filter(Job.status.in_(["queued", "running"])).scalar()
