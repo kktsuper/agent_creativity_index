@@ -109,6 +109,10 @@ def test_full_pipeline(client):
         assert f'class="topic" href="/papers?tag={quote(t)}"' in page_text(client, acr_id)
         assert listing in client.get("/papers", params={"tag": t}).text
     assert listing not in client.get("/papers", params={"tag": "no such tag"}).text
+    from html import escape
+    plain = client.get("/papers").text   # topic dropdown lists public tags; the active one is preselected
+    assert '<select name="tag"' in plain and all(f'<option value="{escape(t)}" >' in plain for t in tags)
+    assert f'<option value="{escape(tags[0])}" selected>' in client.get("/papers", params={"tag": tags[0]}).text
     assert d["topic_tags"] == tags   # public API carries the tags and filters on them
     api_ids = lambda t: [x["acr_id"] for x in client.get("/api/v1/papers", params={"tag": t}).json()["papers"]]
     assert all(acr_id in api_ids(t) for t in tags) and acr_id not in api_ids("no such tag")

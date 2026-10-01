@@ -87,7 +87,7 @@ table.kv th{text-align:left;color:var(--dim);font-weight:600;padding:.35em .8em 
 .fulltext{border-top:1px solid var(--line);padding-top:1em}
 .topics{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.6em 0}
 .topic{display:inline-block;font:.78rem var(--sans);padding:.15em .65em;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);text-decoration:none}
-a.topic:hover{border-color:var(--acc);color:var(--acc)}.topic.on{border-color:var(--acc);color:var(--acc)}
+a.topic:hover{border-color:var(--acc);color:var(--acc)}
 .decision{background:var(--card);border-left:4px solid var(--ok);border-radius:0 6px 6px 0;padding:.6em 1.1em;margin:.5em 0}
 .onpage{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1rem;font:.85rem var(--sans);margin:.2rem 0 0;padding:.55rem 0;border-bottom:1px solid var(--line)}.onpage a{margin:0;color:var(--acc);font:500 .88rem var(--sans);letter-spacing:0}.onpage a:hover{color:var(--acc-hover);border-bottom:0;text-decoration:underline}
 .onpage span{color:var(--dim);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.72rem}

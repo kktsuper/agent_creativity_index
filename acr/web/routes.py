@@ -42,8 +42,15 @@ def papers(request: Request, db: Session = Depends(get_db), q: str = "", field: 
     rows = query.offset((page_no - 1) * per).limit(per).all()
     fields = [r[0] for r in db.query(Paper.field, func.count(Paper.id)).filter(Paper.public_at.isnot(None))
               .group_by(Paper.field).order_by(func.count(Paper.id).desc()).limit(30).all()]
+    counts: dict[str, int] = {}   # topic tags on public papers only, so rejected papers' tags never show
+    for (ts,) in search_query(db).with_entities(Paper.topic_tags):
+        for t in ts or []:
+            counts[t] = counts.get(t, 0) + 1
+    tags = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    if tag and tag not in counts:
+        tags.append((tag, 0))
     return page(request, "papers.html", papers=rows, total=total, page_no=page_no, pages=max(1, -(-total // per)),
-                q=q, field=field, type=type, sort=sort, authors=authors, tag=tag, fields=fields)
+                q=q, field=field, type=type, sort=sort, authors=authors, tag=tag, fields=fields, tags=tags)
 
 
 @router.get("/papers/{acr_id}", response_class=HTMLResponse)

@@ -19,6 +19,9 @@ Changes on the working branch that are not yet merged.
 
 ### 2026-09-30
 
+- **Filter by topic on the Papers page.** A "any topic" dropdown sits beside "any field", listing every tag on
+  public papers with its count, most used first (tags from rejected papers never appear). It replaces the
+  separate "Tagged … clear tag" line; tag labels on paper pages still link straight to the filtered list.
 - **One ember button per screen.** The home page's "Submit a paper" is now the neutral-outline secondary, like
   "How review works", so the menu's Submit (on every page) is the only ember button.
 - **Shorter main menu.** Eight equal links become Papers · Authors · Index · About ▾ · Submit. "About" opens
