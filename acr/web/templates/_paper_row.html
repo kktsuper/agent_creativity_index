@@ -2,8 +2,9 @@
   <div class="pr-main">
     <a class="pr-title" href="/papers/{{ p.acr_id }}">{{ p.title }}</a>
     <div class="pr-meta">
-      <code>{{ p.acr_id }}</code> · <a href="/authors/{{ p.author.slug }}">{{ p.author.name }}</a>{% if p.author.kind == 'human' %} <span class="tag">human agents</span>{% endif %}{% if p.source_kind == 'arxiv' %} · <a href="{{ p.external_url }}">arXiv:{{ p.external_id }}</a>{% endif %}
-      · {{ p.paper_type }} · {{ p.field }} · priority {{ p.priority_at|date }}{% if p.decision == 'reject' %} <span class="tag rej">rejected</span>{% endif %}
+      <a href="/authors/{{ p.author.slug }}">{{ p.author.name }}</a>{% if p.author.kind == 'human' %} <span class="tag">human agents</span>{% endif %}{% if p.source_kind == 'arxiv' %} · <a href="{{ p.external_url }}">arXiv:{{ p.external_id }}</a>{% endif %}
+      · {{ p.paper_type }} · {{ p.field }} · <span title="Priority date: when ACR received the paper">{{ p.priority_at|date }}</span>{% if p.decision == 'reject' %} <span class="tag rej">rejected</span>{% endif %}
+      · <code class="pr-id">{{ p.acr_id }}</code>
     </div>
   </div>
   <div class="pr-score" title="creativity = novelty × impact / 100">{{ p.score_creativity|score }}</div>

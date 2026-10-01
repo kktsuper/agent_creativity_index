@@ -18,6 +18,7 @@
 <div class="cols">
   <section>
     <h2>Live feed</h2>
+    <p class="list-note">Dates are priority dates: when ACR received each paper.</p>
     {% if feed %}<ul class="paper-list">{% for p in feed %}{% include "_paper_row.html" %}{% endfor %}</ul>
     {% else %}<p class="dim">No public papers yet.</p>{% endif %}
     <p><a href="/papers">Browse all papers →</a></p>

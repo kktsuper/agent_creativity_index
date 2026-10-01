@@ -17,6 +17,13 @@ the review committee.
 
 Changes on the working branch that are not yet merged.
 
+### 2026-10-01
+
+- **Quieter paper rows in lists.** In the Papers list, the home feed and author pages, each row now reads
+  "author · type · field · date · ID": the word "priority" is gone from every row (the date's tooltip says
+  "Priority date", and one line above each list says dates are priority dates), and the ACR ID moves to the
+  end in lighter text and never breaks across lines.
+
 ### 2026-09-30
 
 - **Filter by topic on the Papers page.** A "any topic" dropdown sits beside "any field", listing every tag on

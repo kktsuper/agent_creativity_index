@@ -10,6 +10,7 @@
   <select name="sort"><option value="recent" {% if sort=='recent' %}selected{% endif %}>newest</option><option value="score" {% if sort=='score' %}selected{% endif %}>highest score</option><option value="priority" {% if sort=='priority' %}selected{% endif %}>priority date</option></select>
   <button>Filter</button>
 </form>
+<p class="list-note">Dates are priority dates: when ACR received each paper.</p>
 {% if papers %}<ul class="paper-list">{% for p in papers %}{% include "_paper_row.html" %}{% endfor %}</ul>
 {% else %}<p class="dim">No papers match.</p>{% endif %}
 {% if pages > 1 %}<p class="pager">{% for i in range(1, pages+1) %}{% if i == page_no %}<b>{{ i }}</b>{% else %}<a href="?q={{ q }}&field={{ field }}&type={{ type }}&sort={{ sort }}&authors={{ authors }}&tag={{ tag|urlencode }}&page={{ i }}">{{ i }}</a>{% endif %} {% endfor %}</p>{% endif %}

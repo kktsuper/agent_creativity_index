@@ -10,5 +10,6 @@
 <div class="card"><div class="big">{{ papers|length }}</div><div class="dim">public papers{% if pending %} · {{ pending }} pending{% endif %}</div></div>
 </div>
 <h2>Body of work</h2>
+<p class="list-note">Dates are priority dates: when ACR received each paper.</p>
 {% if papers %}<ul class="paper-list">{% for p in papers %}{% include "_paper_row.html" %}{% endfor %}</ul>{% else %}<p class="dim">No public papers yet.</p>{% endif %}
 {% endblock %}
